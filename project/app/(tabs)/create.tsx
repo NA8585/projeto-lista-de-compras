@@ -10,7 +10,7 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Calendar, Save, Trash2 } from 'lucide-react-native';
-import { colors } from '@/constants/Colors';
+import { useTheme } from '@/context/ThemeContext';
 import { ShoppingList, ShoppingItem, ListCategory, UserSubscription } from '@/types';
 import { StorageService } from '@/services/storage';
 import { ParserService } from '@/services/parser';
@@ -22,6 +22,7 @@ import { router } from 'expo-router';
 const CATEGORIES: ListCategory[] = ['Mercado', 'Farmácia', 'Papelaria', 'Pet Shop'];
 
 export default function CreateScreen() {
+  const { colors } = useTheme();
   const [title, setTitle] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<ListCategory>('Mercado');
   const [selectedDate, setSelectedDate] = useState(new Date());
@@ -366,7 +367,7 @@ const styles = StyleSheet.create({
     borderColor: colors.border,
     borderRadius: 8,
     padding: 12,
-    backgroundColor: '#F9F9F9',
+    backgroundColor: colors.control,
   },
   categoryGrid: {
     flexDirection: 'row',
@@ -378,7 +379,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     borderWidth: 1,
     borderColor: colors.border,
-    backgroundColor: '#F9F9F9',
+    backgroundColor: colors.control,
   },
   categoryButtonSelected: {
     backgroundColor: colors.primary,
@@ -399,7 +400,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: colors.border,
     borderRadius: 8,
-    backgroundColor: '#F9F9F9',
+    backgroundColor: colors.control,
   },
   dateButtonText: {
     fontSize: 16,
