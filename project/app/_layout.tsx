@@ -20,8 +20,8 @@ SplashScreen.preventAutoHideAsync();
 function RootLayoutNav() {
   const spec = useThemeSpec();
   const { paletteName, colorScheme } = usePaletteTheme();
-
   const content = (
+
       <Stack>
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
         <Stack.Screen
