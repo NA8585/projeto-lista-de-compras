@@ -58,7 +58,7 @@ export class VoiceService {
         reject(err);
       };
 
-      if (!Voice.start) {
+      if (!Voice || !Voice.start) {
         // Fallback to simulated recognition when native module isn't available
         this.simulateSpeechRecognition(handleSuccess, handleError);
         return;
@@ -159,7 +159,7 @@ export class VoiceService {
     if (this.recognition && Platform.OS === 'web') {
       this.recognition.stop();
     }
-    if (Voice.stop) {
+    if (Voice && Voice.stop) {
       Voice.stop();
       if (Voice.destroy) {
         Voice.destroy().then(Voice.removeAllListeners).catch(() => {});
