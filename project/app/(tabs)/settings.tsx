@@ -22,18 +22,18 @@ import {
   Trash2
 } from 'lucide-react-native';
 import { Feather } from '@expo/vector-icons';
-import { palettes, PaletteName } from '@/constants/Colors';
+import { palettes as colorPalettes, PaletteName } from '@/constants/Colors';
 import { useTheme } from '@/context/ThemeContext';
 import { UserSubscription } from '@/types';
 import { StorageService } from '@/services/storage';
 import { router } from 'expo-router';
-import { colors } from '@/constants/Colors';
 
 export default function SettingsScreen() {
   const [subscription, setSubscription] = useState<UserSubscription | null>(null);
   const [notifications, setNotifications] = useState(true);
   const [voiceConfirmation, setVoiceConfirmation] = useState(false);
   const { colors, colorScheme, toggleColorScheme, paletteName, setPalette } = useTheme();
+  const styles = React.useMemo(() => createStyles(colors), [colors]);
 
   useEffect(() => {
     loadSubscription();
@@ -179,7 +179,7 @@ export default function SettingsScreen() {
         <View style={styles.section}>
           <Text style={[styles.sectionTitle, { color: colors.text }]}>Paleta de Cores</Text>
           <View style={[styles.settingItem, { backgroundColor: colors.surface, flexDirection: 'column', alignItems: 'stretch' }]}>
-            {Object.keys(palettes).map((name) => (
+          {Object.keys(colorPalettes).map((name) => (
               <Pressable key={name} onPress={() => setPalette(name as PaletteName)} style={styles.paletteOption}>
                 <Text style={[styles.settingTitle, { color: colors.text, textTransform: 'capitalize' }]}>{name}</Text>
                 {paletteName === name && (
@@ -276,7 +276,7 @@ export default function SettingsScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (colors: typeof colorPalettes.fresh.light) => StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: colors.control,

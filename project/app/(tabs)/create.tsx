@@ -10,7 +10,8 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Calendar, Save, Trash2 } from 'lucide-react-native';
-import { colors } from '@/constants/Colors';
+import { useTheme } from '@/context/ThemeContext';
+import { palettes } from '@/constants/Colors';
 import { ShoppingList, ShoppingItem, ListCategory, UserSubscription } from '@/types';
 import { StorageService } from '@/services/storage';
 import { ParserService } from '@/services/parser';
@@ -22,6 +23,8 @@ import { router } from 'expo-router';
 const CATEGORIES: ListCategory[] = ['Mercado', 'Farmácia', 'Papelaria', 'Pet Shop'];
 
 export default function CreateScreen() {
+  const { colors } = useTheme();
+  const styles = React.useMemo(() => createStyles(colors), [colors]);
   const [title, setTitle] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<ListCategory>('Mercado');
   const [selectedDate, setSelectedDate] = useState(new Date());
@@ -134,23 +137,13 @@ export default function CreateScreen() {
       };
 
       await StorageService.saveList(newList);
-      
-      Alert.alert(
-        'Lista Salva!',
-        'Sua lista foi criada com sucesso.',
-        [
-          {
-            text: 'OK',
-            onPress: () => {
-              // Reset form
-              setTitle('');
-              setItems([]);
-              generateDefaultTitle();
-              router.push('/(tabs)');
-            },
-          },
-        ]
-      );
+
+      // Reset form before navigating
+      setTitle('');
+      setItems([]);
+      generateDefaultTitle();
+
+      router.push('/(tabs)');
     } catch (error) {
       console.error('Error saving list:', error);
       setError('Erro ao salvar lista');
@@ -293,7 +286,7 @@ export default function CreateScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (colors: typeof palettes.fresh.light) => StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: colors.control,
@@ -366,7 +359,7 @@ const styles = StyleSheet.create({
     borderColor: colors.border,
     borderRadius: 8,
     padding: 12,
-    backgroundColor: '#F9F9F9',
+    backgroundColor: colors.control,
   },
   categoryGrid: {
     flexDirection: 'row',
@@ -378,7 +371,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     borderWidth: 1,
     borderColor: colors.border,
-    backgroundColor: '#F9F9F9',
+    backgroundColor: colors.control,
   },
   categoryButtonSelected: {
     backgroundColor: colors.primary,
@@ -399,7 +392,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: colors.border,
     borderRadius: 8,
-    backgroundColor: '#F9F9F9',
+    backgroundColor: colors.control,
   },
   dateButtonText: {
     fontSize: 16,

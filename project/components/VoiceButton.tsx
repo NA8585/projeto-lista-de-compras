@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { TouchableOpacity, Text, StyleSheet, View, ActivityIndicator } from 'react-native';
+import { useTheme } from '@/context/ThemeContext';
+import { palettes } from '@/constants/Colors';
 import { Mic, MicOff } from 'lucide-react-native';
 import Animated, { 
   useSharedValue, 
@@ -19,6 +21,8 @@ interface VoiceButtonProps {
 }
 
 export default function VoiceButton({ onResult, onError, disabled }: VoiceButtonProps) {
+  const { colors } = useTheme();
+  const styles = React.useMemo(() => createStyles(colors), [colors]);
   const [isListening, setIsListening] = useState(false);
   const scale = useSharedValue(1);
   const opacity = useSharedValue(1);
@@ -98,7 +102,7 @@ export default function VoiceButton({ onResult, onError, disabled }: VoiceButton
               <ActivityIndicator size="small" color="white" style={styles.spinner} />
             </View>
           ) : (
-            <Mic size={28} color={disabled ? '#C7C7CC' : 'white'} />
+            <Mic size={28} color={disabled ? colors.separator : 'white'} />
           )}
         </TouchableOpacity>
       </Animated.View>
@@ -110,7 +114,7 @@ export default function VoiceButton({ onResult, onError, disabled }: VoiceButton
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (colors: typeof palettes.fresh.light) => StyleSheet.create({
   container: {
     alignItems: 'center',
     marginVertical: 20,
@@ -119,21 +123,21 @@ const styles = StyleSheet.create({
     width: 80,
     height: 80,
     borderRadius: 40,
-    backgroundColor: '#007AFF',
+    backgroundColor: colors.primary,
     justifyContent: 'center',
     alignItems: 'center',
-    shadowColor: '#007AFF',
+    shadowColor: colors.primary,
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.3,
     shadowRadius: 8,
     elevation: 8,
   },
   buttonListening: {
-    backgroundColor: '#FF3B30',
-    shadowColor: '#FF3B30',
+    backgroundColor: colors.danger,
+    shadowColor: colors.danger,
   },
   buttonDisabled: {
-    backgroundColor: '#F2F2F7',
+    backgroundColor: colors.control,
     shadowOpacity: 0,
     elevation: 0,
   },
@@ -150,10 +154,10 @@ const styles = StyleSheet.create({
     marginTop: 12,
     fontSize: 16,
     fontFamily: 'Inter-Medium',
-    color: '#1C1C1E',
+    color: colors.text,
     textAlign: 'center',
   },
   labelDisabled: {
-    color: '#C7C7CC',
+    color: colors.separator,
   },
 });
