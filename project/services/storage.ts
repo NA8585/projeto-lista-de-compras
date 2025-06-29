@@ -36,7 +36,7 @@ export class StorageService {
   static async saveList(list: ShoppingList): Promise<void> {
     try {
       const lists = await this.getLists();
-      const existingIndex = lists.findIndex(l => l.id === list.id);
+      const existingIndex = lists.findIndex((l: ShoppingList) => l.id === list.id);
       
       if (existingIndex >= 0) {
         lists[existingIndex] = { ...list, updatedAt: new Date() };
@@ -54,7 +54,7 @@ export class StorageService {
   static async deleteList(listId: string): Promise<void> {
     try {
       const lists = await this.getLists();
-      const filteredLists = lists.filter(l => l.id !== listId);
+      const filteredLists = lists.filter((l: ShoppingList) => l.id !== listId);
       await AsyncStorage.setItem(STORAGE_KEYS.LISTS, JSON.stringify(filteredLists));
     } catch (error) {
       console.error('Error deleting list:', error);
@@ -156,4 +156,24 @@ export function useShoppingLists() {
   }, [loadLists]);
 
   return { lists, loading, loadLists, deleteList, saveList };
+}
+
+export async function setItem<T>(key: string, value: T): Promise<void> {
+  try {
+    await AsyncStorage.setItem(key, JSON.stringify(value));
+  } catch (error) {
+    console.error('Error setting item:', error);
+    throw error;
+  }
+}
+
+export async function getItem<T>(key: string): Promise<T | null> {
+  try {
+    const data = await AsyncStorage.getItem(key);
+    if (!data) return null;
+    return JSON.parse(data) as T;
+  } catch (error) {
+    console.error('Error getting item:', error);
+    return null;
+  }
 }
