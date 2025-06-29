@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, TextInput } from 'react-native';
 import { useTheme } from '@/context/ThemeContext';
+import { palettes } from '@/constants/Colors';
 import { Check, Camera, Trash2 } from 'lucide-react-native';
 import Animated, { 
   useSharedValue, 
@@ -29,6 +30,7 @@ export default function ItemTile({
   showActions = true
 }: ItemTileProps) {
   const { colors } = useTheme();
+  const styles = React.useMemo(() => createStyles(colors), [colors]);
   const scale = useSharedValue(1);
   const opacity = useSharedValue(item.checked ? 0.6 : 1);
 
@@ -131,7 +133,7 @@ export default function ItemTile({
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (colors: typeof palettes.fresh.light) => StyleSheet.create({
   container: {
     flexDirection: 'row',
     alignItems: 'center',
