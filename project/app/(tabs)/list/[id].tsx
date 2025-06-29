@@ -6,9 +6,11 @@ import { StorageService } from '@/services/storage';
 import { ParserService } from '@/services/parser';
 import ItemTile from '@/components/ItemTile';
 import { useTheme } from '@/context/ThemeContext';
+import { palettes } from '@/constants/Colors';
 
 export default function ListDetailScreen() {
   const { colors } = useTheme();
+  const styles = React.useMemo(() => createStyles(colors), [colors]);
   const params = useLocalSearchParams();
   const idParam = Array.isArray(params.id) ? params.id[0] : params.id;
   const router = useRouter();
@@ -126,7 +128,7 @@ export default function ListDetailScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (colors: typeof palettes.fresh.light) => StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: colors.control,

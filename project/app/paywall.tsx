@@ -8,6 +8,7 @@ import {
   Alert,
 } from 'react-native';
 import { useTheme } from '@/context/ThemeContext';
+import { palettes } from '@/constants/Colors';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { X, Crown, Check, Zap, Camera, Users, Cloud } from 'lucide-react-native';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -66,6 +67,7 @@ const FEATURES = [
 
 export default function PaywallScreen() {
   const { colors } = useTheme();
+  const styles = React.useMemo(() => createStyles(colors), [colors]);
   const [selectedPlan, setSelectedPlan] = useState('annual');
   const [subscription, setSubscription] = useState<UserSubscription | null>(null);
   const [loading, setLoading] = useState(false);
@@ -241,7 +243,7 @@ export default function PaywallScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (colors: typeof palettes.fresh.light) => StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: colors.control,

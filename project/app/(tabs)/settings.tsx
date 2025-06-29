@@ -24,6 +24,7 @@ import {
 import { Feather } from '@expo/vector-icons';
 import { palettes, PaletteName } from '@/constants/Colors';
 import { useTheme } from '@/context/ThemeContext';
+import { palettes } from '@/constants/Colors';
 import { UserSubscription } from '@/types';
 import { StorageService } from '@/services/storage';
 import { router } from 'expo-router';
@@ -33,6 +34,7 @@ export default function SettingsScreen() {
   const [notifications, setNotifications] = useState(true);
   const [voiceConfirmation, setVoiceConfirmation] = useState(false);
   const { colors, colorScheme, toggleColorScheme, paletteName, setPalette } = useTheme();
+  const styles = React.useMemo(() => createStyles(colors), [colors]);
 
   useEffect(() => {
     loadSubscription();
@@ -275,7 +277,7 @@ export default function SettingsScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (colors: typeof palettes.fresh.light) => StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: colors.control,

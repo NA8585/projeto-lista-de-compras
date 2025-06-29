@@ -11,6 +11,7 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Calendar, Save, Trash2 } from 'lucide-react-native';
 import { useTheme } from '@/context/ThemeContext';
+import { palettes } from '@/constants/Colors';
 import { ShoppingList, ShoppingItem, ListCategory, UserSubscription } from '@/types';
 import { StorageService } from '@/services/storage';
 import { ParserService } from '@/services/parser';
@@ -23,6 +24,7 @@ const CATEGORIES: ListCategory[] = ['Mercado', 'Farmácia', 'Papelaria', 'Pet Sh
 
 export default function CreateScreen() {
   const { colors } = useTheme();
+  const styles = React.useMemo(() => createStyles(colors), [colors]);
   const [title, setTitle] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<ListCategory>('Mercado');
   const [selectedDate, setSelectedDate] = useState(new Date());
@@ -294,7 +296,7 @@ export default function CreateScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (colors: typeof palettes.fresh.light) => StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: colors.control,
