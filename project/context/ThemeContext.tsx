@@ -1,52 +1,75 @@
-import React, { createContext, useContext, useState, ReactNode } from 'react';
+import React, { createContext, useState, useContext, useMemo, ReactNode } from 'react';
 import { useColorScheme } from 'react-native';
+import { palettes, PaletteName } from '../constants/Colors';
+import { setItem, getItem } from '../services/storage';
 
-export type ThemeColors = {
-  primary: string;
-  background: string;
-  surface: string;
-  text: string;
-};
-
-const lightColors: ThemeColors = {
-  primary: '#007AFF',
-  background: '#F2F2F7',
-  surface: '#FFFFFF',
-  text: '#1C1C1E',
-};
-
-const darkColors: ThemeColors = {
-  primary: '#0A84FF',
-  background: '#000000',
-  surface: '#1C1C1E',
-  text: '#FFFFFF',
-};
-
-interface ThemeContextValue {
-  colors: ThemeColors;
-  toggleTheme: () => void;
-  isDark: boolean;
+interface ThemeContextType {
+  colors: typeof palettes.fresh.light;
+  paletteName: PaletteName;
+  colorScheme: 'light' | 'dark';
+  setPalette: (name: PaletteName) => void;
+  toggleColorScheme: () => void;
 }
 
-const ThemeContext = createContext<ThemeContextValue>({
-  colors: lightColors,
-  toggleTheme: () => {},
-  isDark: false,
-});
+const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
-export const ThemeProvider = ({ children }: { children: ReactNode }) => {
+interface ThemeProviderProps {
+  children: ReactNode;
+}
+
+export const ThemeProvider = ({ children }: ThemeProviderProps) => {
   const systemScheme = useColorScheme();
-  const [isDark, setIsDark] = useState(systemScheme === 'dark');
+  const [colorScheme, setColorScheme] = useState<'light' | 'dark'>(systemScheme || 'light');
+  const [paletteName, setPaletteName] = useState<PaletteName>('fresh');
 
-  const toggleTheme = () => setIsDark((prev) => !prev);
+  React.useEffect(() => {
+    const loadTheme = async () => {
+      const savedPalette = await getItem<PaletteName>('theme_palette');
+      const savedScheme = await getItem<'light' | 'dark'>('theme_scheme');
+      if (savedPalette) {
+        setPaletteName(savedPalette);
+      }
+      if (savedScheme) {
+        setColorScheme(savedScheme);
+      } else {
+        setColorScheme(systemScheme || 'light');
+      }
+    };
+    loadTheme();
+  }, [systemScheme]);
 
-  const colors = isDark ? darkColors : lightColors;
+  const setPalette = async (name: PaletteName) => {
+    setPaletteName(name);
+    await setItem('theme_palette', name);
+  };
+
+  const toggleColorScheme = async () => {
+    const newScheme = colorScheme === 'light' ? 'dark' : 'light';
+    setColorScheme(newScheme);
+    await setItem('theme_scheme', newScheme);
+  };
+
+  const colors = palettes[paletteName][colorScheme];
+
+  const contextValue = useMemo(() => ({
+    colors,
+    paletteName,
+    setPalette,
+    colorScheme,
+    toggleColorScheme,
+  }), [colors, paletteName, colorScheme]);
 
   return (
-    <ThemeContext.Provider value={{ colors, toggleTheme, isDark }}>
+    <ThemeContext.Provider value={contextValue}>
       {children}
     </ThemeContext.Provider>
   );
 };
 
-export const useTheme = () => useContext(ThemeContext);
+export const useTheme = () => {
+  const context = useContext(ThemeContext);
+  if (context === undefined) {
+    throw new Error('useTheme must be used within a ThemeProvider');
+  }
+  return context;
+};
