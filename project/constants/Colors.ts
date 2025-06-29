@@ -178,6 +178,66 @@ export const palettes = {
       highlight: '#21262d',
       separator: '#2b323a'
     }
+  },
+  sunriseGlass: {
+    light: {
+      primary: '#FF7F00',
+      success: '#34C759',
+      danger: '#FF3B30',
+      warning: '#FF9500',
+      background: '#FFF1C1',
+      surface: '#FFFFFF',
+      text: '#1B1B1B',
+      muted: '#8E8E93',
+      border: '#E5E5EA',
+      control: '#F2F2F7',
+      highlight: '#FFEED7',
+      separator: '#C7C7CC'
+    },
+    dark: {
+      primary: '#FF7F00',
+      success: '#30D158',
+      danger: '#FF453A',
+      warning: '#FF9F0A',
+      background: '#141515',
+      surface: '#1A1A16',
+      text: '#F5F5F5',
+      muted: '#B0BEC5',
+      border: '#3A3A3C',
+      control: '#2C2C2E',
+      highlight: '#4D390C',
+      separator: '#636366'
+    }
+  },
+  nightfallGlass: {
+    light: {
+      primary: '#C74B00',
+      success: '#34C759',
+      danger: '#FF3B30',
+      warning: '#FF9500',
+      background: '#FFF1C1',
+      surface: '#FFFFFF',
+      text: '#1B1B1B',
+      muted: '#8E8E93',
+      border: '#E5E5EA',
+      control: '#F2F2F7',
+      highlight: '#FFEED7',
+      separator: '#C7C7CC'
+    },
+    dark: {
+      primary: '#C74B00',
+      success: '#30D158',
+      danger: '#FF453A',
+      warning: '#FF9F0A',
+      background: '#0F1012',
+      surface: '#141515',
+      text: '#F5F5F5',
+      muted: '#B0BEC5',
+      border: '#3A3A3C',
+      control: '#2C2C2E',
+      highlight: '#374015',
+      separator: '#636366'
+    }
   }
 } as const;
 
