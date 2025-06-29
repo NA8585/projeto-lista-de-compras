@@ -36,7 +36,7 @@ export class StorageService {
   static async saveList(list: ShoppingList): Promise<void> {
     try {
       const lists = await this.getLists();
-      const existingIndex = lists.findIndex(l => l.id === list.id);
+      const existingIndex = lists.findIndex((l: ShoppingList) => l.id === list.id);
       
       if (existingIndex >= 0) {
         lists[existingIndex] = { ...list, updatedAt: new Date() };
@@ -54,7 +54,7 @@ export class StorageService {
   static async deleteList(listId: string): Promise<void> {
     try {
       const lists = await this.getLists();
-      const filteredLists = lists.filter(l => l.id !== listId);
+      const filteredLists = lists.filter((l: ShoppingList) => l.id !== listId);
       await AsyncStorage.setItem(STORAGE_KEYS.LISTS, JSON.stringify(filteredLists));
     } catch (error) {
       console.error('Error deleting list:', error);
