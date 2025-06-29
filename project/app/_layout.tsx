@@ -13,7 +13,6 @@ import {
 import * as SplashScreen from 'expo-splash-screen';
 import { ThemeProvider, useThemeSpec } from '@/theme/useTheme';
 import { ShoppingListProvider } from '@/context/ShoppingListContext';
-
 SplashScreen.preventAutoHideAsync();
 
 function RootLayoutNav() {
