@@ -24,7 +24,6 @@ import {
 import { Feather } from '@expo/vector-icons';
 import { palettes, PaletteName } from '@/constants/Colors';
 import { useTheme as useAppTheme } from '@/context/ThemeContext';
-import { useTheme as useGlassTheme } from '@/theme/useTheme';
 import { UserSubscription } from '@/types';
 import { StorageService } from '@/services/storage';
 import { router } from 'expo-router';
@@ -33,7 +32,6 @@ export default function SettingsScreen() {
   const [subscription, setSubscription] = useState<UserSubscription | null>(null);
   const [notifications, setNotifications] = useState(true);
   const [voiceConfirmation, setVoiceConfirmation] = useState(false);
-  const { name: themeName, setName: setTheme } = useGlassTheme();
   const { colors, colorScheme, toggleColorScheme, paletteName, setPalette } = useAppTheme();
   const styles = React.useMemo(() => createStyles(colors), [colors]);
 
@@ -192,19 +190,6 @@ export default function SettingsScreen() {
           </View>
         </View>
 
-        <View style={styles.section}>
-          <Text style={[styles.sectionTitle, { color: colors.text }]}>Tema</Text>
-          <View style={[styles.settingItem, { backgroundColor: colors.surface, flexDirection: 'column', alignItems: 'stretch' }]}>
-            {(['sunriseGlass', 'nightfallGlass'] as const).map((name) => (
-              <Pressable key={name} onPress={() => setTheme(name)} style={styles.paletteOption}>
-                <Text style={[styles.settingTitle, { color: colors.text, textTransform: 'capitalize' }]}>{name}</Text>
-                {themeName === name && (
-                  <Feather name="check-circle" size={22} color={colors.primary} />
-                )}
-              </Pressable>
-            ))}
-          </View>
-        </View>
 
 
         <View style={styles.section}>
