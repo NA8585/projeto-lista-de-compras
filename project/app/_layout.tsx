@@ -1,7 +1,10 @@
 import { useEffect } from 'react';
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { ThemeProvider, useTheme } from '../context/ThemeContext';
 import { useFrameworkReady } from '@/hooks/useFrameworkReady';
+import { ThemeProvider, useTheme } from '@/context/ThemeContext';
 import { useFonts } from 'expo-font';
 import { ThemeProvider } from '@/context/ThemeContext';
 import {
@@ -13,6 +16,38 @@ import {
 import * as SplashScreen from 'expo-splash-screen';
 
 SplashScreen.preventAutoHideAsync();
+
+function RootLayoutNav() {
+  const { colors, colorScheme } = useTheme();
+
+  return (
+    <>
+      <StatusBar style={colorScheme === 'dark' ? 'light' : 'dark'} />
+      <Stack>
+        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+        <Stack.Screen
+          name="paywall"
+          options={{
+            presentation: 'modal',
+            headerTitle: 'Obter Premium',
+            headerStyle: { backgroundColor: colors.surface },
+            headerTitleStyle: { color: colors.text },
+          }}
+        />
+        <Stack.Screen
+          name="camera"
+          options={{
+            presentation: 'modal',
+            headerTitle: 'Escanear Recibo',
+            headerStyle: { backgroundColor: colors.surface },
+            headerTitleStyle: { color: colors.text },
+          }}
+        />
+        <Stack.Screen name="+not-found" />
+      </Stack>
+    </>
+  );
+}
 
 export default function RootLayout() {
   useFrameworkReady();
@@ -36,13 +71,3 @@ export default function RootLayout() {
 
   return (
     <ThemeProvider>
-      <Stack screenOptions={{ headerShown: false }}>
-        <Stack.Screen name="(tabs)" />
-        <Stack.Screen name="paywall" options={{ presentation: 'modal' }} />
-        <Stack.Screen name="camera" options={{ presentation: 'modal' }} />
-        <Stack.Screen name="+not-found" />
-      </Stack>
-      <StatusBar style="auto" />
-    </ThemeProvider>
-  );
-}

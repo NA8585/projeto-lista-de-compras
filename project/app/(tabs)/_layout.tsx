@@ -4,7 +4,6 @@ import { useTheme } from '@/context/ThemeContext';
 
 export default function TabsLayout() {
   const { colors } = useTheme();
-
   return (
     <Tabs
       screenOptions={{
@@ -22,6 +21,7 @@ export default function TabsLayout() {
         },
       }}
     >
+
       <Tabs.Screen
         name="index"
         options={{

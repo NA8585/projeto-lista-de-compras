@@ -157,5 +157,3 @@ export function useShoppingLists() {
 
   return { lists, loading, loadLists, deleteList, saveList };
 }
-
-
