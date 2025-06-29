@@ -27,7 +27,6 @@ import { useTheme } from '@/context/ThemeContext';
 import { UserSubscription } from '@/types';
 import { StorageService } from '@/services/storage';
 import { router } from 'expo-router';
-import { colors } from '@/constants/Colors';
 
 export default function SettingsScreen() {
   const [subscription, setSubscription] = useState<UserSubscription | null>(null);
