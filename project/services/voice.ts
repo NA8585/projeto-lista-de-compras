@@ -1,6 +1,6 @@
 import * as Speech from 'expo-speech';
 import { Platform, Alert } from 'react-native';
-import { Audio } from 'expo-av';
+import { Audio } from 'expo-audio';
 import Voice from '@react-native-voice/voice';
 import { VoiceRecognitionResult } from '@/types';
 
@@ -24,7 +24,10 @@ export class VoiceService {
       }
     }
 
-    const { status } = await Audio.requestPermissionsAsync();
+    let { status } = await Audio.getPermissionsAsync();
+    if (status !== 'granted') {
+      ({ status } = await Audio.requestPermissionsAsync());
+    }
     return status === 'granted';
   }
 
@@ -39,8 +42,8 @@ export class VoiceService {
       });
     }
 
-    const { status } = await Audio.requestPermissionsAsync();
-    if (status !== 'granted') {
+    const hasPermission = await this.requestPermissions();
+    if (!hasPermission) {
       throw new Error('Permissão negada');
     }
 
@@ -58,7 +61,7 @@ export class VoiceService {
         reject(err);
       };
 
-      if (!Voice || !Voice.start) {
+      if (!Voice || !Voice.start || ((Voice as any).isAvailable && !(await (Voice as any).isAvailable()))) {
         Alert.alert(
           'Reconhecimento não disponível',
           'Para usar a voz no celular, instale a versão Dev do aplicativo. Será utilizada uma simulação.'
@@ -68,11 +71,23 @@ export class VoiceService {
         return;
       }
 
+      try {
+        if (Voice.destroy) {
+          await Voice.destroy();
+          Voice.removeAllListeners();
+        }
+      } catch {}
+
       Voice.onSpeechResults = e => {
         handleSuccess({ text: e.value?.[0] ?? '', confidence: 1 });
       };
       Voice.onSpeechError = err => {
         handleError(new Error(err.error ?? 'Erro de voz'));
+      };
+      Voice.onSpeechPartialResults = e => {
+        if (e.value?.[0]) {
+          handleSuccess({ text: e.value[0], confidence: 1 });
+        }
       };
       this.isListening = true;
 
