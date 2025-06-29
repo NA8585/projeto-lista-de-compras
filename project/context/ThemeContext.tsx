@@ -52,6 +52,15 @@ export const ThemeProvider = ({ children }: ThemeProviderProps) => {
     }
   };
 
+  // Keep glassmorphism theme in sync with the selected palette
+  React.useEffect(() => {
+    if (paletteName === 'sunriseGlass' || paletteName === 'nightfallGlass') {
+      setThemeName(paletteName as ThemeName);
+    } else {
+      setThemeName('sunriseGlass');
+    }
+  }, [paletteName]);
+
   const toggleColorScheme = async () => {
     const newScheme = colorScheme === 'light' ? 'dark' : 'light';
     setColorScheme(newScheme);
