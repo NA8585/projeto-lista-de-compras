@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { useFrameworkReady } from '@/hooks/useFrameworkReady';
+import { ThemeProvider, useTheme } from '@/context/ThemeContext';
 import { useFonts } from 'expo-font';
 import {
   Inter_400Regular,
@@ -34,6 +35,16 @@ export default function RootLayout() {
   }
 
   return (
+    <ThemeProvider>
+      <InnerLayout />
+    </ThemeProvider>
+  );
+}
+
+function InnerLayout() {
+  const { colorScheme } = useTheme();
+
+  return (
     <>
       <Stack screenOptions={{ headerShown: false }}>
         <Stack.Screen name="(tabs)" />
@@ -41,7 +52,7 @@ export default function RootLayout() {
         <Stack.Screen name="camera" options={{ presentation: 'modal' }} />
         <Stack.Screen name="+not-found" />
       </Stack>
-      <StatusBar style="auto" />
+      <StatusBar style={colorScheme === 'dark' ? 'light' : 'dark'} />
     </>
   );
 }
