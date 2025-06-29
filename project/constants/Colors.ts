@@ -118,9 +118,80 @@ export const palettes = {
       highlight: '#0A1F29',
       separator: '#636366'
     }
+  },
+  nebula: {
+    light: {
+      primary: '#ff00ff',
+      success: '#34C759',
+      danger: '#FF3B30',
+      warning: '#FFA000',
+      background: '#19122a',
+      surface: '#221b35',
+      text: '#e0d9ff',
+      muted: '#bdb5d8',
+      border: '#332b45',
+      control: '#2a2240',
+      highlight: '#382c57',
+      separator: '#4c4360'
+    },
+    dark: {
+      primary: '#ff00ff',
+      success: '#30D158',
+      danger: '#FF453A',
+      warning: '#FF9F0A',
+      background: '#19122a',
+      surface: '#221b35',
+      text: '#e0d9ff',
+      muted: '#bdb5d8',
+      border: '#332b45',
+      control: '#2a2240',
+      highlight: '#382c57',
+      separator: '#4c4360'
+    }
+  },
+  cyber: {
+    light: {
+      primary: '#ff33a8',
+      success: '#34C759',
+      danger: '#FF3B30',
+      warning: '#f2ff00',
+      background: '#0d1117',
+      surface: '#151a20',
+      text: '#00eaff',
+      muted: '#5cd6ff',
+      border: '#1f242a',
+      control: '#1a1f26',
+      highlight: '#21262d',
+      separator: '#2b323a'
+    },
+    dark: {
+      primary: '#ff33a8',
+      success: '#32D74B',
+      danger: '#FF453A',
+      warning: '#f2ff00',
+      background: '#0d1117',
+      surface: '#151a20',
+      text: '#00eaff',
+      muted: '#5cd6ff',
+      border: '#1f242a',
+      control: '#1a1f26',
+      highlight: '#21262d',
+      separator: '#2b323a'
+    }
   }
 } as const;
 
 export type PaletteName = keyof typeof palettes;
 
 export const colors = palettes.fresh.light;
+
+export function applyPalette(name: PaletteName, dark: boolean) {
+  if (typeof document === 'undefined') return;
+  const root = document.documentElement;
+  const scheme = palettes[name][dark ? 'dark' : 'light'];
+  Object.entries(scheme).forEach(([k, v]) => {
+    root.style.setProperty(`--${k}`, v as string);
+  });
+  const forceDark = dark && !['nebula', 'cyber'].includes(name);
+  root.classList.toggle('dark', forceDark);
+}

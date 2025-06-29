@@ -14,6 +14,7 @@ import { palettes } from '@/constants/Colors';
 import { router, useLocalSearchParams } from 'expo-router';
 import { StorageService } from '@/services/storage';
 import { ParserService } from '@/services/parser';
+import { parsePrice } from '@/utils/price';
 
 export default function CameraScreen() {
   const { colors } = useTheme();
@@ -30,7 +31,11 @@ export default function CameraScreen() {
       return;
     }
 
-    const price = parseFloat(priceString.replace(',', '.'));
+    const price = parsePrice(priceString);
+    if (price === null) {
+      router.back();
+      return;
+    }
 
     try {
       const lists = await StorageService.getLists();

@@ -1,7 +1,7 @@
 import { View, Text, FlatList, StyleSheet, Pressable } from 'react-native';
 import { router } from 'expo-router';
 import { useTheme } from '@/context/ThemeContext';
-import { useShoppingLists } from '@/services/storage';
+import { useShoppingLists } from '@/context/ShoppingListContext';
 
 export default function HomeScreen() {
   const { colors } = useTheme();
