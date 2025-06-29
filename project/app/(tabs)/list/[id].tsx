@@ -5,6 +5,7 @@ import { ShoppingList, ShoppingItem } from '@/types';
 import { StorageService } from '@/services/storage';
 import { ParserService } from '@/services/parser';
 import ItemTile from '@/components/ItemTile';
+import { colors } from '@/constants/Colors';
 
 export default function ListDetailScreen() {
   const params = useLocalSearchParams();
@@ -117,7 +118,7 @@ export default function ListDetailScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F2F2F7',
+    backgroundColor: colors.control,
     padding: 16,
   },
   centered: {
@@ -126,23 +127,23 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   errorText: {
-    color: '#FF3B30',
+    color: colors.danger,
     fontSize: 16,
   },
   title: {
     fontSize: 24,
     fontFamily: 'Inter-Bold',
-    color: '#1C1C1E',
+    color: colors.text,
     marginBottom: 4,
   },
   category: {
     fontSize: 16,
-    color: '#007AFF',
+    color: colors.primary,
     marginBottom: 4,
   },
   date: {
     fontSize: 14,
-    color: '#8E8E93',
+    color: colors.muted,
     marginBottom: 16,
   },
   itemsSection: {
@@ -150,7 +151,7 @@ const styles = StyleSheet.create({
   },
   itemRow: {
     marginBottom: 16,
-    backgroundColor: 'white',
+    backgroundColor: colors.surface,
     borderRadius: 12,
     padding: 8,
     shadowColor: '#000',
@@ -167,40 +168,40 @@ const styles = StyleSheet.create({
   },
   priceLabel: {
     fontSize: 14,
-    color: '#8E8E93',
+    color: colors.muted,
     marginRight: 8,
   },
   priceInput: {
     width: 80,
     height: 32,
     borderWidth: 1,
-    borderColor: '#C7C7CC',
+    borderColor: colors.separator,
     borderRadius: 6,
     textAlign: 'center',
     fontSize: 16,
-    backgroundColor: 'white',
-    color: '#1C1C1E',
+    backgroundColor: colors.surface,
+    color: colors.text,
   },
   totalLabel: {
     fontSize: 18,
-    color: '#1C1C1E',
+    color: colors.text,
     marginTop: 16,
     marginBottom: 4,
     fontFamily: 'Inter-SemiBold',
   },
   totalValue: {
     fontSize: 22,
-    color: '#34C759',
+    color: colors.success,
     fontFamily: 'Inter-Bold',
     marginBottom: 24,
   },
   saveButton: {
-    backgroundColor: '#007AFF',
+    backgroundColor: colors.primary,
     borderRadius: 20,
     paddingVertical: 14,
     alignItems: 'center',
     justifyContent: 'center',
-    shadowColor: '#007AFF',
+    shadowColor: colors.primary,
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.2,
     shadowRadius: 4,
