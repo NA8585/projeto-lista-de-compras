@@ -11,7 +11,7 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import FundoComGradiente from '@/components/FundoComGradiente';
 import { Calendar, Save, Trash2 } from 'lucide-react-native';
-import { useThemeSpec } from '@/theme/useTheme';
+import { useTheme } from '@/context/ThemeContext';
 import { ShoppingList, ShoppingItem, ListCategory, UserSubscription } from '@/types';
 import { StorageService } from '@/services/storage';
 import { ParserService } from '@/services/parser';
@@ -24,17 +24,7 @@ import { useShoppingLists } from '@/context/ShoppingListContext';
 const CATEGORIES: ListCategory[] = ['Mercado', 'Farmácia', 'Papelaria', 'Pet Shop'];
 
 export default function CreateScreen() {
-  const spec = useThemeSpec();
-  const colors = React.useMemo(() => ({
-    background: spec.background[0],
-    surface: spec.card,
-    text: spec.text,
-    primary: spec.primary,
-    border: spec.border,
-    control: spec.card,
-    separator: spec.border,
-    danger: spec.accent,
-  }), [spec]);
+  const { colors } = useTheme();
   const styles = React.useMemo(() => createStyles(colors), [colors]);
   const { listId } = useLocalSearchParams<{ listId?: string }>();
   const { lists, upsertList } = useShoppingLists();
