@@ -59,6 +59,10 @@ export class VoiceService {
       };
 
       if (!Voice || !Voice.start) {
+        Alert.alert(
+          'Reconhecimento não disponível',
+          'Para usar a voz no celular, instale a versão Dev do aplicativo. Será utilizada uma simulação.'
+        );
         // Fallback to simulated recognition when native module isn't available
         this.simulateSpeechRecognition(handleSuccess, handleError);
         return;

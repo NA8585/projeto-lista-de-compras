@@ -13,17 +13,15 @@ import {
 import * as SplashScreen from 'expo-splash-screen';
 import { ThemeProvider, useThemeSpec } from '@/theme/useTheme';
 import FundoComGradiente from '@/components/FundoComGradiente';
-import { ThemeProvider as PaletteProvider } from '@/context/ThemeContext';
+import { ThemeProvider as PaletteProvider, useTheme as usePaletteTheme } from '@/context/ThemeContext';
 import { ShoppingListProvider } from '@/context/ShoppingListContext';
 SplashScreen.preventAutoHideAsync();
 
 function RootLayoutNav() {
   const spec = useThemeSpec();
+  const { paletteName, colorScheme } = usePaletteTheme();
+  const content = (
 
-  return (
-    <>
-      <StatusBar style={spec.text === '#F5F5F5' ? 'light' : 'dark'} />
-      <FundoComGradiente>
       <Stack>
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
         <Stack.Screen
@@ -46,7 +44,19 @@ function RootLayoutNav() {
         />
         <Stack.Screen name="+not-found" />
       </Stack>
-      </FundoComGradiente>
+  );
+
+  const isGlass =
+    paletteName === 'sunriseGlass' || paletteName === 'nightfallGlass';
+
+  return (
+    <>
+      <StatusBar style={colorScheme === 'dark' ? 'light' : 'dark'} />
+      {isGlass ? (
+        <FundoComGradiente>{content}</FundoComGradiente>
+      ) : (
+        content
+      )}
     </>
   );
 }
