@@ -4,6 +4,7 @@ import { StatusBar } from 'expo-status-bar';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { ThemeProvider, useTheme } from '../context/ThemeContext';
 import { useFrameworkReady } from '@/hooks/useFrameworkReady';
+import { ThemeProvider, useTheme } from '@/context/ThemeContext';
 import { useFonts } from 'expo-font';
 import {
   Inter_400Regular,
@@ -68,10 +69,24 @@ export default function RootLayout() {
   }
 
   return (
-    <GestureHandlerRootView style={{ flex: 1 }}>
-      <ThemeProvider>
-        <RootLayoutNav />
-      </ThemeProvider>
-    </GestureHandlerRootView>
+    <ThemeProvider>
+      <InnerLayout />
+    </ThemeProvider>
+  );
+}
+
+function InnerLayout() {
+  const { colorScheme } = useTheme();
+
+  return (
+    <>
+      <Stack screenOptions={{ headerShown: false }}>
+        <Stack.Screen name="(tabs)" />
+        <Stack.Screen name="paywall" options={{ presentation: 'modal' }} />
+        <Stack.Screen name="camera" options={{ presentation: 'modal' }} />
+        <Stack.Screen name="+not-found" />
+      </Stack>
+      <StatusBar style={colorScheme === 'dark' ? 'light' : 'dark'} />
+    </>
   );
 }

@@ -7,19 +7,23 @@ import {
   TouchableOpacity,
   Switch,
   Alert,
+  Pressable,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { 
-  Crown, 
-  Mic, 
-  Camera, 
-  Bell, 
-  Shield, 
-  HelpCircle, 
+import {
+  Crown,
+  Mic,
+  Camera,
+  Bell,
+  Shield,
+  HelpCircle,
   Star,
   ChevronRight,
   Trash2
 } from 'lucide-react-native';
+import { Feather } from '@expo/vector-icons';
+import { palettes, PaletteName } from '@/constants/Colors';
+import { useTheme } from '@/context/ThemeContext';
 import { UserSubscription } from '@/types';
 import { StorageService } from '@/services/storage';
 import { router } from 'expo-router';
@@ -29,6 +33,7 @@ export default function SettingsScreen() {
   const [subscription, setSubscription] = useState<UserSubscription | null>(null);
   const [notifications, setNotifications] = useState(true);
   const [voiceConfirmation, setVoiceConfirmation] = useState(false);
+  const { colors, colorScheme, toggleColorScheme, paletteName, setPalette } = useTheme();
 
   useEffect(() => {
     loadSubscription();
@@ -151,13 +156,39 @@ export default function SettingsScreen() {
   );
 
   return (
-    <SafeAreaView style={styles.container}>
-      <View style={styles.header}>
-        <Text style={styles.headerTitle}>Configurações</Text>
+    <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]}>
+      <View style={[styles.header, { backgroundColor: colors.surface }]}>
+        <Text style={[styles.headerTitle, { color: colors.text }]}>Configurações</Text>
       </View>
 
-      <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
+      <ScrollView style={[styles.content, { backgroundColor: colors.background }]} showsVerticalScrollIndicator={false}>
         {renderSubscriptionCard()}
+
+        <View style={styles.section}>
+          <Text style={[styles.sectionTitle, { color: colors.text }]}>Aparência</Text>
+          <TouchableOpacity onPress={toggleColorScheme} style={[styles.settingItem, { backgroundColor: colors.surface }]}> 
+            <Text style={[styles.settingTitle, { color: colors.text }]}>Modo Escuro</Text>
+            <View style={styles.switch}>
+              <View style={[styles.switchTrack, { backgroundColor: colorScheme === 'dark' ? colors.primary : '#ccc' }]}>
+                <View style={[styles.switchThumb, { alignSelf: colorScheme === 'dark' ? 'flex-end' : 'flex-start' }]} />
+              </View>
+            </View>
+          </TouchableOpacity>
+        </View>
+
+        <View style={styles.section}>
+          <Text style={[styles.sectionTitle, { color: colors.text }]}>Paleta de Cores</Text>
+          <View style={[styles.settingItem, { backgroundColor: colors.surface, flexDirection: 'column', alignItems: 'stretch' }]}>
+            {Object.keys(palettes).map((name) => (
+              <Pressable key={name} onPress={() => setPalette(name as PaletteName)} style={styles.paletteOption}>
+                <Text style={[styles.settingTitle, { color: colors.text, textTransform: 'capitalize' }]}>{name}</Text>
+                {paletteName === name && (
+                  <Feather name="check-circle" size={22} color={colors.primary} />
+                )}
+              </Pressable>
+            ))}
+          </View>
+        </View>
 
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Funcionalidades</Text>
@@ -385,5 +416,28 @@ const styles = StyleSheet.create({
     fontFamily: 'Inter-Regular',
     color: colors.separator,
     marginTop: 4,
+  },
+  switch: {
+    width: 50,
+    height: 30,
+    justifyContent: 'center',
+  },
+  switchTrack: {
+    width: '100%',
+    height: '100%',
+    borderRadius: 15,
+  },
+  switchThumb: {
+    width: 26,
+    height: 26,
+    borderRadius: 13,
+    backgroundColor: '#fff',
+    margin: 2,
+  },
+  paletteOption: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingVertical: 12,
   },
 });

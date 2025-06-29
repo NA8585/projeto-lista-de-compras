@@ -1,38 +1,13 @@
-# Node dependencies
+# Node modules
 node_modules/
 
 # Expo
 .expo/
-.expo-shared/
-dist/
-web-build/
-expo-env.d.ts
-
-# Build outputs
-android/
-ios/
-*.keystore
-*.jks
-*.p8
-*.p12
-*.mobileprovision
-*.orig.*
-
-# Metro
-.metro-cache/
-.metro-health-check*
 
 # Logs
-npm-debug.*
-yarn-debug.*
-yarn-error.*
+npm-debug.log*
+yarn-error.log*
 
-# Environment files
-.env
-.env*.local
-
-# macOS
+# Misc
 .DS_Store
-
-# TypeScript
-*.tsbuildinfo
+.env

@@ -1,54 +1,67 @@
-import React, { createContext, useContext, useState } from 'react';
-import { ColorSchemeName, useColorScheme } from 'react-native';
-
-interface ThemeColors {
-  background: string;
-  surface: string;
-  text: string;
-  primary: string;
-}
+import React, { createContext, useContext, useState, useEffect } from 'react';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { baseColors, palettes, PaletteName, ThemeColors, ColorScheme } from '@/constants/Colors';
 
 interface ThemeContextProps {
-  colorScheme: ColorSchemeName;
   colors: ThemeColors;
-  toggleScheme: () => void;
+  colorScheme: ColorScheme;
+  toggleColorScheme: () => void;
+  paletteName: PaletteName;
+  setPalette: (name: PaletteName) => void;
 }
 
-const lightColors: ThemeColors = {
-  background: '#FFFFFF',
-  surface: '#F2F2F7',
-  text: '#1C1C1E',
-  primary: '#007AFF',
-};
-
-const darkColors: ThemeColors = {
-  background: '#000000',
-  surface: '#1C1C1E',
-  text: '#FFFFFF',
-  primary: '#0A84FF',
-};
+const STORAGE_SCHEME = '@listavox:color_scheme';
+const STORAGE_PALETTE = '@listavox:palette';
 
 const ThemeContext = createContext<ThemeContextProps | undefined>(undefined);
 
-export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const systemScheme = useColorScheme();
-  const [scheme, setScheme] = useState<ColorSchemeName>(systemScheme ?? 'light');
+export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
+  const [colorScheme, setColorScheme] = useState<ColorScheme>('light');
+  const [paletteName, setPaletteName] = useState<PaletteName>('blue');
 
-  const toggleScheme = () => {
-    setScheme(prev => (prev === 'dark' ? 'light' : 'dark'));
+  useEffect(() => {
+    (async () => {
+      const storedScheme = await AsyncStorage.getItem(STORAGE_SCHEME);
+      const storedPalette = await AsyncStorage.getItem(STORAGE_PALETTE);
+      if (storedScheme === 'light' || storedScheme === 'dark') {
+        setColorScheme(storedScheme);
+      }
+      if (storedPalette && palettes[storedPalette as PaletteName]) {
+        setPaletteName(storedPalette as PaletteName);
+      }
+    })();
+  }, []);
+
+  useEffect(() => {
+    AsyncStorage.setItem(STORAGE_SCHEME, colorScheme).catch(() => {});
+  }, [colorScheme]);
+
+  useEffect(() => {
+    AsyncStorage.setItem(STORAGE_PALETTE, paletteName).catch(() => {});
+  }, [paletteName]);
+
+  const toggleColorScheme = () => {
+    setColorScheme(prev => (prev === 'light' ? 'dark' : 'light'));
   };
 
-  const colors = scheme === 'dark' ? darkColors : lightColors;
+  const setPalette = (name: PaletteName) => {
+    setPaletteName(name);
+  };
+
+  const colors: ThemeColors = {
+    ...baseColors[colorScheme],
+    primary: palettes[paletteName].primary,
+  };
 
   return (
-    <ThemeContext.Provider value={{ colorScheme: scheme, colors, toggleScheme }}>
+    <ThemeContext.Provider value={{ colors, colorScheme, toggleColorScheme, paletteName, setPalette }}>
       {children}
     </ThemeContext.Provider>
   );
 };
 
 export const useTheme = () => {
-  const context = useContext(ThemeContext);
-  if (!context) throw new Error('useTheme must be used within a ThemeProvider');
-  return context;
+  const ctx = useContext(ThemeContext);
+  if (!ctx) throw new Error('useTheme must be used within ThemeProvider');
+  return ctx;
 };
