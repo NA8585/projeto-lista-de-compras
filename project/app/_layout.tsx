@@ -12,6 +12,7 @@ import {
 } from '@expo-google-fonts/inter';
 import * as SplashScreen from 'expo-splash-screen';
 import { ThemeProvider, useThemeSpec } from '@/theme/useTheme';
+import { ThemeProvider as PaletteProvider } from '@/context/ThemeContext';
 import { ShoppingListProvider } from '@/context/ShoppingListContext';
 SplashScreen.preventAutoHideAsync();
 
@@ -70,9 +71,11 @@ export default function RootLayout() {
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <ThemeProvider>
-        <ShoppingListProvider>
-          <RootLayoutNav />
-        </ShoppingListProvider>
+        <PaletteProvider>
+          <ShoppingListProvider>
+            <RootLayoutNav />
+          </ShoppingListProvider>
+        </PaletteProvider>
       </ThemeProvider>
     </GestureHandlerRootView>
   );

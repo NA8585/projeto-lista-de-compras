@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { themes, ThemeName } from './themes';
+import { getItem, setItem } from '@/services/storage';
 
 interface ThemeCtx {
   name: ThemeName;
@@ -18,6 +19,15 @@ export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
   const spec = getSpec(name);
 
   useEffect(() => {
+    (async () => {
+      const saved = await getItem<ThemeName>('theme_name');
+      if (saved && themes[saved]) {
+        setName(saved);
+      }
+    })();
+  }, []);
+
+  useEffect(() => {
     if (typeof document !== 'undefined') {
       const root = document.documentElement;
       Object.entries(spec).forEach(([k, v]) => {
@@ -25,7 +35,8 @@ export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
         root.style.setProperty(`--${k}`, v as string);
       });
     }
-  }, [spec]);
+    setItem('theme_name', name);
+  }, [spec, name]);
 
   return <Ctx.Provider value={{ name, spec, setName }}>{children}</Ctx.Provider>;
 };
@@ -37,3 +48,9 @@ export const useThemeSpec = () => {
 };
 
 export const useSetTheme = () => useContext(Ctx)!.setName;
+
+export const useTheme = () => {
+  const ctx = useContext(Ctx);
+  if (!ctx) throw new Error('ThemeProvider missing');
+  return ctx;
+};
