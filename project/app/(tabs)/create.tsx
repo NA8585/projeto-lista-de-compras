@@ -137,23 +137,13 @@ export default function CreateScreen() {
       };
 
       await StorageService.saveList(newList);
-      
-      Alert.alert(
-        'Lista Salva!',
-        'Sua lista foi criada com sucesso.',
-        [
-          {
-            text: 'OK',
-            onPress: () => {
-              // Reset form
-              setTitle('');
-              setItems([]);
-              generateDefaultTitle();
-              router.push('/(tabs)');
-            },
-          },
-        ]
-      );
+
+      // Reset form before navigating
+      setTitle('');
+      setItems([]);
+      generateDefaultTitle();
+
+      router.push('/(tabs)');
     } catch (error) {
       console.error('Error saving list:', error);
       setError('Erro ao salvar lista');

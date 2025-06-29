@@ -16,6 +16,7 @@ export default function ListDetailScreen() {
   const router = useRouter();
   const [list, setList] = useState<ShoppingList | null>(null);
   const [items, setItems] = useState<ShoppingItem[]>([]);
+  const [priceInputs, setPriceInputs] = useState<Record<string, string>>({});
   const [title, setTitle] = useState('');
   const [error, setError] = useState<string | null>(null);
 
@@ -31,6 +32,11 @@ export default function ListDetailScreen() {
         setList(found);
         setItems(found.items.map(item => ({ ...item, quantity: item.quantity ?? 1 })));
         setTitle(found.title);
+        const inputs: Record<string, string> = {};
+        found.items.forEach(i => {
+          inputs[i.id] = i.price !== undefined ? i.price.toString().replace('.', ',') : '';
+        });
+        setPriceInputs(inputs);
       }
     } catch (e) {
       setError('Erro ao carregar lista');
@@ -41,12 +47,17 @@ export default function ListDetailScreen() {
     setItems(prev => prev.map(item => item.id === itemId ? { ...item, quantity: newQuantity } : item));
   };
 
-  const handlePriceChange = (itemId: string, newPrice: string) => {
-    const parsed = parseFloat(newPrice.replace(',', '.'));
-    setItems(prev => prev.map(item => item.id === itemId ? {
-      ...item,
-      price: isNaN(parsed) ? undefined : parsed,
-    } : item));
+  const handlePriceChange = (itemId: string, text: string) => {
+    const sanitized = text.replace(/[^0-9.,]/g, '');
+    setPriceInputs(prev => ({ ...prev, [itemId]: sanitized }));
+    const parsed = parseFloat(sanitized.replace(',', '.'));
+    setItems(prev =>
+      prev.map(item =>
+        item.id === itemId
+          ? { ...item, price: Number.isNaN(parsed) ? undefined : parsed }
+          : item
+      )
+    );
   };
 
   const handleDeleteItem = (itemId: string) => {
@@ -109,9 +120,9 @@ export default function ListDetailScreen() {
               <Text style={styles.priceLabel}>Preço:</Text>
               <TextInput
                 style={styles.priceInput}
-                keyboardType="numeric"
+                keyboardType="decimal-pad"
                 inputMode="decimal"
-                value={item.price !== undefined ? item.price.toString().replace('.', ',') : ''}
+                value={priceInputs[item.id] ?? ''}
                 onChangeText={value => handlePriceChange(item.id, value)}
                 placeholder="0,00"
               />
