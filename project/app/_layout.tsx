@@ -6,6 +6,7 @@ import { ThemeProvider, useTheme } from '../context/ThemeContext';
 import { useFrameworkReady } from '@/hooks/useFrameworkReady';
 import { ThemeProvider, useTheme } from '@/context/ThemeContext';
 import { useFonts } from 'expo-font';
+import { ThemeProvider } from '@/context/ThemeContext';
 import {
   Inter_400Regular,
   Inter_500Medium,
@@ -70,23 +71,3 @@ export default function RootLayout() {
 
   return (
     <ThemeProvider>
-      <InnerLayout />
-    </ThemeProvider>
-  );
-}
-
-function InnerLayout() {
-  const { colorScheme } = useTheme();
-
-  return (
-    <>
-      <Stack screenOptions={{ headerShown: false }}>
-        <Stack.Screen name="(tabs)" />
-        <Stack.Screen name="paywall" options={{ presentation: 'modal' }} />
-        <Stack.Screen name="camera" options={{ presentation: 'modal' }} />
-        <Stack.Screen name="+not-found" />
-      </Stack>
-      <StatusBar style={colorScheme === 'dark' ? 'light' : 'dark'} />
-    </>
-  );
-}

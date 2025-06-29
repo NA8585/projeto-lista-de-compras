@@ -129,22 +129,31 @@ export class StorageService {
     }
   }
 }
-export async function setItem<T>(key: string, value: T): Promise<void> {
-  try {
-    await AsyncStorage.setItem(key, JSON.stringify(value));
-  } catch (error) {
-    console.error('Error setting item:', error);
-    throw error;
-  }
-}
+import { useEffect, useState, useCallback } from 'react';
 
-export async function getItem<T>(key: string): Promise<T | null> {
-  try {
-    const data = await AsyncStorage.getItem(key);
-    if (!data) return null;
-    return JSON.parse(data) as T;
-  } catch (error) {
-    console.error('Error getting item:', error);
-    return null;
-  }
+export function useShoppingLists() {
+  const [lists, setLists] = useState<ShoppingList[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  const loadLists = useCallback(async () => {
+    const loadedLists = await StorageService.getLists();
+    setLists(loadedLists.sort((a, b) => b.updatedAt.getTime() - a.updatedAt.getTime()));
+    setLoading(false);
+  }, []);
+
+  const deleteList = useCallback(async (id: string) => {
+    await StorageService.deleteList(id);
+    await loadLists();
+  }, [loadLists]);
+
+  const saveList = useCallback(async (list: ShoppingList) => {
+    await StorageService.saveList(list);
+    await loadLists();
+  }, [loadLists]);
+
+  useEffect(() => {
+    loadLists();
+  }, [loadLists]);
+
+  return { lists, loading, loadLists, deleteList, saveList };
 }
