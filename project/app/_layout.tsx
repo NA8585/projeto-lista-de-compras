@@ -12,16 +12,16 @@ import {
 } from '@expo-google-fonts/inter';
 import * as SplashScreen from 'expo-splash-screen';
 import { ThemeProvider, useThemeSpec } from '@/theme/useTheme';
-import { ThemeProvider as PaletteProvider } from '@/context/ThemeContext';
+import FundoComGradiente from '@/components/FundoComGradiente';
+import { ThemeProvider as PaletteProvider, useTheme as usePaletteTheme } from '@/context/ThemeContext';
 import { ShoppingListProvider } from '@/context/ShoppingListContext';
 SplashScreen.preventAutoHideAsync();
 
 function RootLayoutNav() {
   const spec = useThemeSpec();
+  const { paletteName, colorScheme } = usePaletteTheme();
 
-  return (
-    <>
-      <StatusBar style={spec.text === '#F5F5F5' ? 'light' : 'dark'} />
+  const content = (
       <Stack>
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
         <Stack.Screen
@@ -44,6 +44,19 @@ function RootLayoutNav() {
         />
         <Stack.Screen name="+not-found" />
       </Stack>
+  );
+
+  const isGlass =
+    paletteName === 'sunriseGlass' || paletteName === 'nightfallGlass';
+
+  return (
+    <>
+      <StatusBar style={colorScheme === 'dark' ? 'light' : 'dark'} />
+      {isGlass ? (
+        <FundoComGradiente>{content}</FundoComGradiente>
+      ) : (
+        content
+      )}
     </>
   );
 }
