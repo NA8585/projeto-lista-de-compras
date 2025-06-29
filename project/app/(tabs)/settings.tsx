@@ -331,9 +331,9 @@ const createStyles = (colors: { [key: string]: string }) => StyleSheet.create({
     elevation: 3,
   },
   premiumCard: {
-    backgroundColor: '#FFF8E1',
+    backgroundColor: colors.highlight,
     borderWidth: 2,
-    borderColor: '#FFD700',
+    borderColor: colors.primary,
   },
   cardHeader: {
     flexDirection: 'row',
@@ -348,7 +348,7 @@ const createStyles = (colors: { [key: string]: string }) => StyleSheet.create({
     marginLeft: 12,
   },
   premiumText: {
-    color: '#FF8F00',
+    color: colors.primary,
   },
   subscriptionStats: {
     flexDirection: 'row',
