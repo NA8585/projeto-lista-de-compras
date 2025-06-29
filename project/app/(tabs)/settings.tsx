@@ -23,6 +23,7 @@ import {
 import { UserSubscription } from '@/types';
 import { StorageService } from '@/services/storage';
 import { router } from 'expo-router';
+import { colors } from '@/constants/Colors';
 
 export default function SettingsScreen() {
   const [subscription, setSubscription] = useState<UserSubscription | null>(null);
@@ -89,11 +90,11 @@ export default function SettingsScreen() {
         onPress={() => router.push('/paywall')}
       >
         <View style={styles.cardHeader}>
-          <Crown size={24} color={subscription.isPremium ? '#FFD700' : '#8E8E93'} />
+          <Crown size={24} color={subscription.isPremium ? '#FFD700' : colors.muted} />
           <Text style={[styles.cardTitle, subscription.isPremium && styles.premiumText]}>
             {subscription.isPremium ? 'ListaVox Premium' : 'ListaVox Gratuito'}
           </Text>
-          <ChevronRight size={20} color="#8E8E93" />
+          <ChevronRight size={20} color={colors.muted} />
         </View>
         
         <View style={styles.subscriptionStats}>
@@ -145,7 +146,7 @@ export default function SettingsScreen() {
         </View>
       </View>
       
-      {rightElement || (onPress && <ChevronRight size={20} color="#8E8E93" />)}
+      {rightElement || (onPress && <ChevronRight size={20} color={colors.muted} />)}
     </TouchableOpacity>
   );
 
@@ -162,34 +163,34 @@ export default function SettingsScreen() {
           <Text style={styles.sectionTitle}>Funcionalidades</Text>
           
           {renderSettingItem(
-            <Mic size={20} color="#007AFF" />,
+            <Mic size={20} color={colors.primary} />,
             'Reconhecimento de Voz',
             'Configurar idioma e sensibilidade',
             () => {},
             <Switch
               value={voiceConfirmation}
               onValueChange={setVoiceConfirmation}
-              trackColor={{ false: '#E5E5EA', true: '#007AFF' }}
+              trackColor={{ false: colors.border, true: colors.primary }}
               thumbColor="white"
             />
           )}
           
           {renderSettingItem(
-            <Camera size={20} color="#007AFF" />,
+            <Camera size={20} color={colors.primary} />,
             'Scanner de Preços',
             subscription?.isPremium ? 'Disponível' : 'Apenas Premium',
             () => {}
           )}
           
           {renderSettingItem(
-            <Bell size={20} color="#007AFF" />,
+            <Bell size={20} color={colors.primary} />,
             'Notificações',
             'Lembretes de compras',
             () => {},
             <Switch
               value={notifications}
               onValueChange={setNotifications}
-              trackColor={{ false: '#E5E5EA', true: '#007AFF' }}
+              trackColor={{ false: colors.border, true: colors.primary }}
               thumbColor="white"
             />
           )}
@@ -199,21 +200,21 @@ export default function SettingsScreen() {
           <Text style={styles.sectionTitle}>Suporte</Text>
           
           {renderSettingItem(
-            <HelpCircle size={20} color="#007AFF" />,
+            <HelpCircle size={20} color={colors.primary} />,
             'Central de Ajuda',
             'Tutoriais e perguntas frequentes',
             () => {}
           )}
           
           {renderSettingItem(
-            <Star size={20} color="#007AFF" />,
+            <Star size={20} color={colors.primary} />,
             'Avaliar App',
             'Deixe sua avaliação na loja',
             () => {}
           )}
           
           {renderSettingItem(
-            <Shield size={20} color="#007AFF" />,
+            <Shield size={20} color={colors.primary} />,
             'Privacidade',
             'Política de privacidade e termos',
             () => {}
@@ -224,7 +225,7 @@ export default function SettingsScreen() {
           <Text style={styles.sectionTitle}>Dados</Text>
           
           {renderSettingItem(
-            <Trash2 size={20} color="#FF3B30" />,
+            <Trash2 size={20} color={colors.danger} />,
             'Limpar Todos os Dados',
             'Remove todas as listas e configurações',
             clearAllData
@@ -247,25 +248,25 @@ export default function SettingsScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F2F2F7',
+    backgroundColor: colors.control,
   },
   header: {
     paddingHorizontal: 16,
     paddingVertical: 16,
-    backgroundColor: 'white',
+    backgroundColor: colors.surface,
     borderBottomWidth: 1,
-    borderBottomColor: '#E5E5EA',
+    borderBottomColor: colors.border,
   },
   headerTitle: {
     fontSize: 28,
     fontFamily: 'Inter-Bold',
-    color: '#1C1C1E',
+    color: colors.text,
   },
   content: {
     flex: 1,
   },
   card: {
-    backgroundColor: 'white',
+    backgroundColor: colors.surface,
     marginHorizontal: 16,
     marginTop: 16,
     borderRadius: 16,
@@ -289,7 +290,7 @@ const styles = StyleSheet.create({
   cardTitle: {
     fontSize: 18,
     fontFamily: 'Inter-SemiBold',
-    color: '#1C1C1E',
+    color: colors.text,
     flex: 1,
     marginLeft: 12,
   },
@@ -307,18 +308,18 @@ const styles = StyleSheet.create({
   statValue: {
     fontSize: 24,
     fontFamily: 'Inter-Bold',
-    color: '#1C1C1E',
+    color: colors.text,
   },
   statLabel: {
     fontSize: 12,
     fontFamily: 'Inter-Regular',
-    color: '#8E8E93',
+    color: colors.muted,
     marginTop: 4,
   },
   upgradeText: {
     fontSize: 14,
     fontFamily: 'Inter-Medium',
-    color: '#007AFF',
+    color: colors.primary,
     textAlign: 'center',
   },
   section: {
@@ -327,7 +328,7 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 16,
     fontFamily: 'Inter-SemiBold',
-    color: '#8E8E93',
+    color: colors.muted,
     marginLeft: 16,
     marginBottom: 8,
     textTransform: 'uppercase',
@@ -336,11 +337,11 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    backgroundColor: 'white',
+    backgroundColor: colors.surface,
     paddingHorizontal: 16,
     paddingVertical: 16,
     borderBottomWidth: 1,
-    borderBottomColor: '#F2F2F7',
+    borderBottomColor: colors.control,
   },
   settingLeft: {
     flexDirection: 'row',
@@ -351,7 +352,7 @@ const styles = StyleSheet.create({
     width: 32,
     height: 32,
     borderRadius: 8,
-    backgroundColor: '#F2F2F7',
+    backgroundColor: colors.control,
     justifyContent: 'center',
     alignItems: 'center',
     marginRight: 12,
@@ -362,12 +363,12 @@ const styles = StyleSheet.create({
   settingTitle: {
     fontSize: 16,
     fontFamily: 'Inter-Regular',
-    color: '#1C1C1E',
+    color: colors.text,
   },
   settingSubtitle: {
     fontSize: 14,
     fontFamily: 'Inter-Regular',
-    color: '#8E8E93',
+    color: colors.muted,
     marginTop: 2,
   },
   footer: {
@@ -377,12 +378,12 @@ const styles = StyleSheet.create({
   footerText: {
     fontSize: 14,
     fontFamily: 'Inter-Medium',
-    color: '#8E8E93',
+    color: colors.muted,
   },
   footerSubtext: {
     fontSize: 12,
     fontFamily: 'Inter-Regular',
-    color: '#C7C7CC',
+    color: colors.separator,
     marginTop: 4,
   },
 });

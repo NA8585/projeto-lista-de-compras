@@ -10,6 +10,7 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Plus, Search, Filter } from 'lucide-react-native';
+import { colors } from '@/constants/Colors';
 import { ShoppingList } from '@/types';
 import { StorageService } from '@/services/storage';
 import { format } from 'date-fns';
@@ -128,10 +129,10 @@ export default function ListsScreen() {
         <Text style={styles.headerTitle}>Minhas Listas</Text>
         <View style={styles.headerActions}>
           <TouchableOpacity style={styles.headerButton}>
-            <Search size={24} color="#007AFF" />
+            <Search size={24} color={colors.primary} />
           </TouchableOpacity>
           <TouchableOpacity style={styles.headerButton}>
-            <Filter size={24} color="#007AFF" />
+            <Filter size={24} color={colors.primary} />
           </TouchableOpacity>
         </View>
       </View>
@@ -154,7 +155,7 @@ export default function ListsScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F2F2F7',
+    backgroundColor: colors.control,
   },
   header: {
     flexDirection: 'row',
@@ -162,14 +163,14 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingHorizontal: 16,
     paddingVertical: 16,
-    backgroundColor: 'white',
+    backgroundColor: colors.surface,
     borderBottomWidth: 1,
-    borderBottomColor: '#E5E5EA',
+    borderBottomColor: colors.border,
   },
   headerTitle: {
     fontSize: 28,
     fontFamily: 'Inter-Bold',
-    color: '#1C1C1E',
+    color: colors.text,
   },
   headerActions: {
     flexDirection: 'row',
@@ -178,7 +179,7 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     borderRadius: 20,
-    backgroundColor: '#F2F2F7',
+    backgroundColor: colors.control,
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -192,7 +193,7 @@ const styles = StyleSheet.create({
     padding: 32,
   },
   listItem: {
-    backgroundColor: 'white',
+    backgroundColor: colors.surface,
     borderRadius: 16,
     padding: 16,
     marginBottom: 12,
@@ -211,14 +212,14 @@ const styles = StyleSheet.create({
   listTitle: {
     fontSize: 18,
     fontFamily: 'Inter-SemiBold',
-    color: '#1C1C1E',
+    color: colors.text,
     flex: 1,
   },
   listCategory: {
     fontSize: 12,
     fontFamily: 'Inter-Medium',
-    color: '#007AFF',
-    backgroundColor: '#E3F2FD',
+    color: colors.primary,
+    backgroundColor: colors.highlight,
     paddingHorizontal: 8,
     paddingVertical: 4,
     borderRadius: 8,
@@ -226,7 +227,7 @@ const styles = StyleSheet.create({
   listDate: {
     fontSize: 14,
     fontFamily: 'Inter-Regular',
-    color: '#8E8E93',
+    color: colors.muted,
     marginBottom: 12,
   },
   listStats: {
@@ -238,22 +239,22 @@ const styles = StyleSheet.create({
   itemCount: {
     fontSize: 14,
     fontFamily: 'Inter-Medium',
-    color: '#1C1C1E',
+    color: colors.text,
   },
   totalPrice: {
     fontSize: 16,
     fontFamily: 'Inter-SemiBold',
-    color: '#34C759',
+    color: colors.success,
   },
   progressBar: {
     height: 4,
-    backgroundColor: '#E5E5EA',
+    backgroundColor: colors.border,
     borderRadius: 2,
     overflow: 'hidden',
   },
   progressFill: {
     height: '100%',
-    backgroundColor: '#34C759',
+    backgroundColor: colors.success,
     borderRadius: 2,
   },
   emptyState: {
@@ -262,13 +263,13 @@ const styles = StyleSheet.create({
   emptyTitle: {
     fontSize: 24,
     fontFamily: 'Inter-SemiBold',
-    color: '#1C1C1E',
+    color: colors.text,
     marginBottom: 8,
   },
   emptySubtitle: {
     fontSize: 16,
     fontFamily: 'Inter-Regular',
-    color: '#8E8E93',
+    color: colors.muted,
     textAlign: 'center',
     marginBottom: 32,
     lineHeight: 24,
@@ -276,7 +277,7 @@ const styles = StyleSheet.create({
   createButton: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#007AFF',
+    backgroundColor: colors.primary,
     paddingHorizontal: 24,
     paddingVertical: 12,
     borderRadius: 24,
