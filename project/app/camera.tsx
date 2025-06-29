@@ -9,12 +9,16 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { CameraView, CameraType, useCameraPermissions } from 'expo-camera';
 import { X, Camera, FlipHorizontal, Zap } from 'lucide-react-native';
-import { colors } from '@/constants/Colors';
+import { useTheme } from '@/context/ThemeContext';
+import { palettes } from '@/constants/Colors';
 import { router, useLocalSearchParams } from 'expo-router';
 import { StorageService } from '@/services/storage';
 import { ParserService } from '@/services/parser';
+import { parsePrice } from '@/utils/price';
 
 export default function CameraScreen() {
+  const { colors } = useTheme();
+  const styles = React.useMemo(() => createStyles(colors), [colors]);
   const { itemId } = useLocalSearchParams();
   const [facing, setFacing] = useState<CameraType>('back');
   const [permission, requestPermission] = useCameraPermissions();
@@ -27,7 +31,11 @@ export default function CameraScreen() {
       return;
     }
 
-    const price = parseFloat(priceString.replace(',', '.'));
+    const price = parsePrice(priceString);
+    if (price === null) {
+      router.back();
+      return;
+    }
 
     try {
       const lists = await StorageService.getLists();
@@ -210,7 +218,7 @@ export default function CameraScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (colors: typeof palettes.fresh.light) => StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: 'black',

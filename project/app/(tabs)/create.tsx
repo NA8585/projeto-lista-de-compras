@@ -10,22 +10,30 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Calendar, Save, Trash2 } from 'lucide-react-native';
-import { colors } from '@/constants/Colors';
+import { useTheme } from '@/context/ThemeContext';
+import { palettes } from '@/constants/Colors';
 import { ShoppingList, ShoppingItem, ListCategory, UserSubscription } from '@/types';
 import { StorageService } from '@/services/storage';
 import { ParserService } from '@/services/parser';
 import { v4 as uuidv4 } from 'uuid';
 import VoiceButton from '@/components/VoiceButton';
 import ItemTile from '@/components/ItemTile';
-import { router } from 'expo-router';
+import { router, useLocalSearchParams } from 'expo-router';
+import { useShoppingLists } from '@/context/ShoppingListContext';
 
 const CATEGORIES: ListCategory[] = ['Mercado', 'Farmácia', 'Papelaria', 'Pet Shop'];
 
 export default function CreateScreen() {
+  const { colors } = useTheme();
+  const styles = React.useMemo(() => createStyles(colors), [colors]);
+  const { listId } = useLocalSearchParams<{ listId?: string }>();
+  const { lists, upsertList } = useShoppingLists();
+  const editing = Boolean(listId);
+  const existing = editing ? lists.find(l => l.id === listId) : undefined;
   const [title, setTitle] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<ListCategory>('Mercado');
   const [selectedDate, setSelectedDate] = useState(new Date());
-  const [items, setItems] = useState<ShoppingItem[]>([]);
+  const [items, setItems] = useState<ShoppingItem[]>(() => existing?.items ?? []);
   const [subscription, setSubscription] = useState<UserSubscription | null>(null);
   const [error, setError] = useState<string | null>(null);
 
@@ -33,6 +41,16 @@ export default function CreateScreen() {
     loadSubscription();
     generateDefaultTitle();
   }, [selectedCategory, selectedDate]);
+
+  useEffect(() => {
+    if (editing && existing) {
+      setTitle(existing.title);
+      setSelectedCategory(existing.category);
+      setSelectedDate(new Date(existing.date));
+      setItems(existing.items);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [editing, existing?.id]);
 
   const loadSubscription = async () => {
     try {
@@ -121,36 +139,26 @@ export default function CreateScreen() {
 
     try {
       const totalPrice = ParserService.calculateTotal(items);
-      
+
       const newList: ShoppingList = {
-        id: uuidv4(),
+        id: listId ?? uuidv4(),
         title: title.trim(),
         date: selectedDate,
         category: selectedCategory,
         items,
         totalPrice,
-        createdAt: new Date(),
+        createdAt: editing && existing ? existing.createdAt : new Date(),
         updatedAt: new Date(),
       };
 
-      await StorageService.saveList(newList);
-      
-      Alert.alert(
-        'Lista Salva!',
-        'Sua lista foi criada com sucesso.',
-        [
-          {
-            text: 'OK',
-            onPress: () => {
-              // Reset form
-              setTitle('');
-              setItems([]);
-              generateDefaultTitle();
-              router.push('/(tabs)');
-            },
-          },
-        ]
-      );
+      await upsertList(newList);
+
+      // Reset form before navigating
+      setTitle('');
+      setItems([]);
+      generateDefaultTitle();
+
+      router.replace('/(tabs)');
     } catch (error) {
       console.error('Error saving list:', error);
       setError('Erro ao salvar lista');
@@ -163,7 +171,7 @@ export default function CreateScreen() {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
-        <Text style={styles.headerTitle}>Nova Lista</Text>
+        <Text style={styles.headerTitle}>{editing ? 'Editar Lista' : 'Nova Lista'}</Text>
         <TouchableOpacity
           style={styles.saveButton}
           onPress={saveList}
@@ -293,7 +301,7 @@ export default function CreateScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (colors: typeof palettes.fresh.light) => StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: colors.control,
@@ -366,7 +374,7 @@ const styles = StyleSheet.create({
     borderColor: colors.border,
     borderRadius: 8,
     padding: 12,
-    backgroundColor: '#F9F9F9',
+    backgroundColor: colors.control,
   },
   categoryGrid: {
     flexDirection: 'row',
@@ -378,7 +386,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     borderWidth: 1,
     borderColor: colors.border,
-    backgroundColor: '#F9F9F9',
+    backgroundColor: colors.control,
   },
   categoryButtonSelected: {
     backgroundColor: colors.primary,
@@ -399,7 +407,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: colors.border,
     borderRadius: 8,
-    backgroundColor: '#F9F9F9',
+    backgroundColor: colors.control,
   },
   dateButtonText: {
     fontSize: 16,

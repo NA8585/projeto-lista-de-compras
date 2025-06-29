@@ -12,11 +12,17 @@ import {
 } from '@expo-google-fonts/inter';
 import * as SplashScreen from 'expo-splash-screen';
 import { ThemeProvider, useTheme } from '@/context/ThemeContext';
+import { ShoppingListProvider } from '@/context/ShoppingListContext';
+import { applyPalette } from '@/constants/Colors';
 
 SplashScreen.preventAutoHideAsync();
 
 function RootLayoutNav() {
-  const { colors, colorScheme } = useTheme();
+  const { colors, colorScheme, paletteName } = useTheme();
+
+  useEffect(() => {
+    applyPalette(paletteName, colorScheme === 'dark');
+  }, [paletteName, colorScheme]);
 
   return (
     <>
@@ -70,7 +76,9 @@ export default function RootLayout() {
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <ThemeProvider>
-        <RootLayoutNav />
+        <ShoppingListProvider>
+          <RootLayoutNav />
+        </ShoppingListProvider>
       </ThemeProvider>
     </GestureHandlerRootView>
   );
