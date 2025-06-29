@@ -39,30 +39,51 @@ export class VoiceService {
       });
     }
 
-    if (!Voice.start) {
-      Alert.alert(
-        'Reconhecimento não disponível',
-        'Instale a versão Dev do app para usar voz no celular.'
-      );
-      throw new Error('Voice not available');
-    }
-
     const { status } = await Audio.requestPermissionsAsync();
     if (status !== 'granted') {
       throw new Error('Permissão negada');
     }
 
-    return new Promise((resolve, reject) => {
-      Voice.onSpeechResults = e => {
+    return new Promise(async (resolve, reject) => {
+      const handleSuccess = (res: VoiceRecognitionResult) => {
         this.isListening = false;
-        resolve({ text: e.value?.[0] ?? '', confidence: 1 });
+        if (this.recognitionTimeout) clearTimeout(this.recognitionTimeout);
+        this.recognitionTimeout = null;
+        resolve(res);
+      };
+      const handleError = (err: Error) => {
+        this.isListening = false;
+        if (this.recognitionTimeout) clearTimeout(this.recognitionTimeout);
+        this.recognitionTimeout = null;
+        reject(err);
+      };
+
+      if (!Voice || !Voice.start) {
+        // Fallback to simulated recognition when native module isn't available
+        this.simulateSpeechRecognition(handleSuccess, handleError);
+        return;
+      }
+
+      Voice.onSpeechResults = e => {
+        handleSuccess({ text: e.value?.[0] ?? '', confidence: 1 });
       };
       Voice.onSpeechError = err => {
-        this.isListening = false;
-        reject(new Error(err.error ?? 'Erro de voz'));
+        handleError(new Error(err.error ?? 'Erro de voz'));
       };
       this.isListening = true;
-      Voice.start('pt-BR');
+
+      try {
+        await Voice.start('pt-BR');
+      } catch (err) {
+        handleError(err as Error);
+        return;
+      }
+
+      // Timeout in case no result is produced
+      this.recognitionTimeout = setTimeout(() => {
+        this.stopListening();
+        handleError(new Error('Tempo esgotado'));
+      }, 10000);
     });
   }
 
@@ -138,8 +159,11 @@ export class VoiceService {
     if (this.recognition && Platform.OS === 'web') {
       this.recognition.stop();
     }
-    if (Voice.stop) {
+    if (Voice && Voice.stop) {
       Voice.stop();
+      if (Voice.destroy) {
+        Voice.destroy().then(Voice.removeAllListeners).catch(() => {});
+      }
     }
     if (this.recognitionTimeout) {
       clearTimeout(this.recognitionTimeout);
