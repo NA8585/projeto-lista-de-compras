@@ -22,7 +22,7 @@ import {
   Trash2
 } from 'lucide-react-native';
 import { Feather } from '@expo/vector-icons';
-import { useThemeSpec, useSetTheme } from '@/theme/useTheme';
+import { useThemeSpec, useTheme } from '@/theme/useTheme';
 import { palettes, PaletteName } from '@/constants/Colors';
 import { useTheme } from '@/context/ThemeContext';
 import { UserSubscription } from '@/types';
@@ -34,15 +34,7 @@ export default function SettingsScreen() {
   const [notifications, setNotifications] = useState(true);
   const [voiceConfirmation, setVoiceConfirmation] = useState(false);
   const spec = useThemeSpec();
-  const setTheme = useSetTheme();
-  const {
-    colors,
-    colorScheme,
-    toggleColorScheme,
-    paletteName,
-    setPalette,
-  } = useTheme();
-
+  const { name: themeName, setName: setTheme, colors, colorScheme, toggleColorScheme, paletteName, setPalette } = useTheme();
   const styles = React.useMemo(() => createStyles(colors), [colors]);
 
   useEffect(() => {
@@ -206,6 +198,9 @@ export default function SettingsScreen() {
             {(['sunriseGlass', 'nightfallGlass'] as const).map((name) => (
               <Pressable key={name} onPress={() => setTheme(name)} style={styles.paletteOption}>
                 <Text style={[styles.settingTitle, { color: colors.text, textTransform: 'capitalize' }]}>{name}</Text>
+                {themeName === name && (
+                  <Feather name="check-circle" size={22} color={colors.primary} />
+                )}
               </Pressable>
             ))}
           </View>
