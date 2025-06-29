@@ -1,5 +1,7 @@
 import * as Speech from 'expo-speech';
-import { Platform } from 'react-native';
+import { Platform, Alert } from 'react-native';
+import { Audio } from 'expo-av';
+import Voice from '@react-native-voice/voice';
 import { VoiceRecognitionResult } from '@/types';
 
 export class VoiceService {
@@ -21,25 +23,46 @@ export class VoiceService {
         return false;
       }
     }
-    
-    // For mobile platforms, permissions are handled by expo-speech
-    return true;
+
+    const { status } = await Audio.requestPermissionsAsync();
+    return status === 'granted';
   }
 
   static async startListening(): Promise<VoiceRecognitionResult> {
-    return new Promise((resolve, reject) => {
-      if (this.isListening) {
-        reject(new Error('Already listening'));
-        return;
-      }
+    if (this.isListening) {
+      throw new Error('Already listening');
+    }
 
-      if (Platform.OS === 'web') {
+    if (Platform.OS === 'web') {
+      return new Promise((resolve, reject) => {
         this.startWebSpeechRecognition(resolve, reject);
-      } else {
-        // For mobile, we'll simulate speech recognition for demo purposes
-        // In a real app, you'd integrate with a proper speech recognition service
-        this.simulateSpeechRecognition(resolve, reject);
-      }
+      });
+    }
+
+    if (!Voice.start) {
+      Alert.alert(
+        'Reconhecimento não disponível',
+        'Instale a versão Dev do app para usar voz no celular.'
+      );
+      throw new Error('Voice not available');
+    }
+
+    const { status } = await Audio.requestPermissionsAsync();
+    if (status !== 'granted') {
+      throw new Error('Permissão negada');
+    }
+
+    return new Promise((resolve, reject) => {
+      Voice.onSpeechResults = e => {
+        this.isListening = false;
+        resolve({ text: e.value?.[0] ?? '', confidence: 1 });
+      };
+      Voice.onSpeechError = err => {
+        this.isListening = false;
+        reject(new Error(err.error ?? 'Erro de voz'));
+      };
+      this.isListening = true;
+      Voice.start('pt-BR');
     });
   }
 
@@ -114,6 +137,9 @@ export class VoiceService {
   static stopListening(): void {
     if (this.recognition && Platform.OS === 'web') {
       this.recognition.stop();
+    }
+    if (Voice.stop) {
+      Voice.stop();
     }
     if (this.recognitionTimeout) {
       clearTimeout(this.recognitionTimeout);
