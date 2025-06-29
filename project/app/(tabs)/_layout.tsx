@@ -1,23 +1,33 @@
 import { Tabs } from 'expo-router';
-import { ShoppingCart, Calendar, Settings, Plus } from 'lucide-react-native';
-import { StyleSheet, View } from 'react-native';
+import { Feather } from '@expo/vector-icons';
+import { useTheme } from '@/context/ThemeContext';
 
-export default function TabLayout() {
+export default function TabsLayout() {
+  const { colors } = useTheme();
+
   return (
     <Tabs
       screenOptions={{
-        headerShown: false,
-        tabBarStyle: styles.tabBar,
-        tabBarActiveTintColor: '#007AFF',
-        tabBarInactiveTintColor: '#8E8E93',
-        tabBarLabelStyle: styles.tabBarLabel,
-      }}>
+        tabBarActiveTintColor: colors.primary,
+        tabBarInactiveTintColor: colors.text,
+        tabBarStyle: {
+          backgroundColor: colors.surface,
+          borderTopColor: colors.surface,
+        },
+        headerStyle: {
+          backgroundColor: colors.surface,
+        },
+        headerTitleStyle: {
+          color: colors.text,
+        },
+      }}
+    >
       <Tabs.Screen
         name="index"
         options={{
           title: 'Listas',
-          tabBarIcon: ({ size, color }) => (
-            <ShoppingCart size={size} color={color} />
+          tabBarIcon: ({ color, size }) => (
+            <Feather name="list" size={size} color={color} />
           ),
         }}
       />
@@ -25,10 +35,8 @@ export default function TabLayout() {
         name="create"
         options={{
           title: 'Criar',
-          tabBarIcon: ({ size, color }) => (
-            <View style={[styles.createButton, { backgroundColor: color === '#007AFF' ? '#007AFF' : '#F2F2F7' }]}>
-              <Plus size={size - 4} color={color === '#007AFF' ? 'white' : color} />
-            </View>
+          tabBarIcon: ({ color, size }) => (
+            <Feather name="plus-circle" size={size} color={color} />
           ),
         }}
       />
@@ -36,8 +44,8 @@ export default function TabLayout() {
         name="calendar"
         options={{
           title: 'Agenda',
-          tabBarIcon: ({ size, color }) => (
-            <Calendar size={size} color={color} />
+          tabBarIcon: ({ color, size }) => (
+            <Feather name="calendar" size={size} color={color} />
           ),
         }}
       />
@@ -45,34 +53,11 @@ export default function TabLayout() {
         name="settings"
         options={{
           title: 'Config',
-          tabBarIcon: ({ size, color }) => (
-            <Settings size={size} color={color} />
+          tabBarIcon: ({ color, size }) => (
+            <Feather name="settings" size={size} color={color} />
           ),
         }}
       />
     </Tabs>
   );
 }
-
-const styles = StyleSheet.create({
-  tabBar: {
-    backgroundColor: 'white',
-    borderTopWidth: 1,
-    borderTopColor: '#E5E5EA',
-    paddingTop: 8,
-    paddingBottom: 8,
-    height: 84,
-  },
-  tabBarLabel: {
-    fontFamily: 'Inter-Medium',
-    fontSize: 12,
-    marginTop: 4,
-  },
-  createButton: {
-    width: 32,
-    height: 32,
-    borderRadius: 16,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-});

@@ -129,3 +129,33 @@ export class StorageService {
     }
   }
 }
+import { useEffect, useState, useCallback } from 'react';
+
+export function useShoppingLists() {
+  const [lists, setLists] = useState<ShoppingList[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  const loadLists = useCallback(async () => {
+    const loadedLists = await StorageService.getLists();
+    setLists(loadedLists.sort((a, b) => b.updatedAt.getTime() - a.updatedAt.getTime()));
+    setLoading(false);
+  }, []);
+
+  const deleteList = useCallback(async (id: string) => {
+    await StorageService.deleteList(id);
+    await loadLists();
+  }, [loadLists]);
+
+  const saveList = useCallback(async (list: ShoppingList) => {
+    await StorageService.saveList(list);
+    await loadLists();
+  }, [loadLists]);
+
+  useEffect(() => {
+    loadLists();
+  }, [loadLists]);
+
+  return { lists, loading, loadLists, deleteList, saveList };
+}
+
+
