@@ -9,12 +9,13 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { CameraView, CameraType, useCameraPermissions } from 'expo-camera';
 import { X, Camera, FlipHorizontal, Zap } from 'lucide-react-native';
-import { colors } from '@/constants/Colors';
+import { useTheme } from '@/context/ThemeContext';
 import { router, useLocalSearchParams } from 'expo-router';
 import { StorageService } from '@/services/storage';
 import { ParserService } from '@/services/parser';
 
 export default function CameraScreen() {
+  const { colors } = useTheme();
   const { itemId } = useLocalSearchParams();
   const [facing, setFacing] = useState<CameraType>('back');
   const [permission, requestPermission] = useCameraPermissions();

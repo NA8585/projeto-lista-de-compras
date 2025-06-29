@@ -5,9 +5,10 @@ import { ShoppingList, ShoppingItem } from '@/types';
 import { StorageService } from '@/services/storage';
 import { ParserService } from '@/services/parser';
 import ItemTile from '@/components/ItemTile';
-import { colors } from '@/constants/Colors';
+import { useTheme } from '@/context/ThemeContext';
 
 export default function ListDetailScreen() {
+  const { colors } = useTheme();
   const params = useLocalSearchParams();
   const idParam = Array.isArray(params.id) ? params.id[0] : params.id;
   const router = useRouter();
@@ -149,7 +150,7 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     padding: 8,
     marginBottom: 4,
-    backgroundColor: '#F9F9F9',
+    backgroundColor: colors.control,
   },
   title: {
     fontSize: 24,

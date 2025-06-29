@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, TextInput } from 'react-native';
-import { colors } from '@/constants/Colors';
+import { useTheme } from '@/context/ThemeContext';
 import { Check, Camera, Trash2 } from 'lucide-react-native';
 import Animated, { 
   useSharedValue, 
@@ -20,14 +20,15 @@ interface ItemTileProps {
   showActions?: boolean;
 }
 
-export default function ItemTile({ 
-  item, 
-  onToggle, 
-  onDelete, 
-  onScan, 
+export default function ItemTile({
+  item,
+  onToggle,
+  onDelete,
+  onScan,
   onQuantityChange,
-  showActions = true 
+  showActions = true
 }: ItemTileProps) {
+  const { colors } = useTheme();
   const scale = useSharedValue(1);
   const opacity = useSharedValue(item.checked ? 0.6 : 1);
 

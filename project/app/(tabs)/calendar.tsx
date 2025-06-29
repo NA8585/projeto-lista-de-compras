@@ -8,7 +8,7 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { ChevronLeft, ChevronRight, Plus } from 'lucide-react-native';
-import { colors } from '@/constants/Colors';
+import { useTheme } from '@/context/ThemeContext';
 import { ShoppingList } from '@/types';
 import { StorageService } from '@/services/storage';
 import { format, startOfMonth, endOfMonth, eachDayOfInterval, isSameDay, addMonths, subMonths } from 'date-fns';
@@ -16,6 +16,7 @@ import { ptBR } from 'date-fns/locale';
 import { router } from 'expo-router';
 
 export default function CalendarScreen() {
+  const { colors } = useTheme();
   const [currentDate, setCurrentDate] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [lists, setLists] = useState<ShoppingList[]>([]);
@@ -251,7 +252,7 @@ const styles = StyleSheet.create({
     textTransform: 'capitalize',
   },
   calendar: {
-    backgroundColor: 'white',
+    backgroundColor: colors.surface,
     marginHorizontal: 16,
     marginTop: 8,
     borderRadius: 12,
@@ -348,7 +349,7 @@ const styles = StyleSheet.create({
     gap: 12,
   },
   listItem: {
-    backgroundColor: 'white',
+    backgroundColor: colors.surface,
     borderRadius: 12,
     padding: 16,
     shadowColor: '#000',
