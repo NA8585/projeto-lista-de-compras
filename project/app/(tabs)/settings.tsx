@@ -22,7 +22,6 @@ import {
   Trash2
 } from 'lucide-react-native';
 import { Feather } from '@expo/vector-icons';
-import { useThemeSpec, useTheme } from '@/theme/useTheme';
 import { palettes, PaletteName } from '@/constants/Colors';
 import { useTheme } from '@/context/ThemeContext';
 import { UserSubscription } from '@/types';
@@ -33,7 +32,6 @@ export default function SettingsScreen() {
   const [subscription, setSubscription] = useState<UserSubscription | null>(null);
   const [notifications, setNotifications] = useState(true);
   const [voiceConfirmation, setVoiceConfirmation] = useState(false);
-  const spec = useThemeSpec();
   const { name: themeName, setName: setTheme, colors, colorScheme, toggleColorScheme, paletteName, setPalette } = useTheme();
   const styles = React.useMemo(() => createStyles(colors), [colors]);
 
