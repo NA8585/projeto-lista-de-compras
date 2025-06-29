@@ -23,7 +23,8 @@ import {
 } from 'lucide-react-native';
 import { Feather } from '@expo/vector-icons';
 import { palettes, PaletteName } from '@/constants/Colors';
-import { useTheme } from '@/context/ThemeContext';
+import { useTheme as useAppTheme } from '@/context/ThemeContext';
+import { useTheme as useGlassTheme } from '@/theme/useTheme';
 import { UserSubscription } from '@/types';
 import { StorageService } from '@/services/storage';
 import { router } from 'expo-router';
@@ -32,7 +33,8 @@ export default function SettingsScreen() {
   const [subscription, setSubscription] = useState<UserSubscription | null>(null);
   const [notifications, setNotifications] = useState(true);
   const [voiceConfirmation, setVoiceConfirmation] = useState(false);
-  const { name: themeName, setName: setTheme, colors, colorScheme, toggleColorScheme, paletteName, setPalette } = useTheme();
+  const { name: themeName, setName: setTheme } = useGlassTheme();
+  const { colors, colorScheme, toggleColorScheme, paletteName, setPalette } = useAppTheme();
   const styles = React.useMemo(() => createStyles(colors), [colors]);
 
   useEffect(() => {
