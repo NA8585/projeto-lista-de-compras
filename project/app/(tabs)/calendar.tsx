@@ -8,6 +8,7 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { ChevronLeft, ChevronRight, Plus } from 'lucide-react-native';
+import { colors } from '@/constants/Colors';
 import { ShoppingList } from '@/types';
 import { StorageService } from '@/services/storage';
 import { format, startOfMonth, endOfMonth, eachDayOfInterval, isSameDay, addMonths, subMonths } from 'date-fns';
@@ -137,7 +138,7 @@ export default function CalendarScreen() {
             style={styles.navButton}
             onPress={() => navigateMonth('prev')}
           >
-            <ChevronLeft size={24} color="#007AFF" />
+            <ChevronLeft size={24} color={colors.primary} />
           </TouchableOpacity>
           
           <Text style={styles.monthTitle}>
@@ -148,7 +149,7 @@ export default function CalendarScreen() {
             style={styles.navButton}
             onPress={() => navigateMonth('next')}
           >
-            <ChevronRight size={24} color="#007AFF" />
+            <ChevronRight size={24} color={colors.primary} />
           </TouchableOpacity>
         </View>
 
@@ -175,7 +176,7 @@ export default function CalendarScreen() {
               style={styles.addButton}
               onPress={() => router.push('/create')}
             >
-              <Plus size={20} color="#007AFF" />
+              <Plus size={20} color={colors.primary} />
             </TouchableOpacity>
           </View>
 
@@ -207,19 +208,19 @@ export default function CalendarScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F2F2F7',
+    backgroundColor: colors.control,
   },
   header: {
     paddingHorizontal: 16,
     paddingVertical: 16,
-    backgroundColor: 'white',
+    backgroundColor: colors.surface,
     borderBottomWidth: 1,
-    borderBottomColor: '#E5E5EA',
+    borderBottomColor: colors.border,
   },
   headerTitle: {
     fontSize: 28,
     fontFamily: 'Inter-Bold',
-    color: '#1C1C1E',
+    color: colors.text,
   },
   content: {
     flex: 1,
@@ -230,7 +231,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingHorizontal: 16,
     paddingVertical: 20,
-    backgroundColor: 'white',
+    backgroundColor: colors.surface,
     marginTop: 16,
     marginHorizontal: 16,
     borderRadius: 12,
@@ -239,14 +240,14 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     borderRadius: 20,
-    backgroundColor: '#F2F2F7',
+    backgroundColor: colors.control,
     justifyContent: 'center',
     alignItems: 'center',
   },
   monthTitle: {
     fontSize: 20,
     fontFamily: 'Inter-SemiBold',
-    color: '#1C1C1E',
+    color: colors.text,
     textTransform: 'capitalize',
   },
   calendar: {
@@ -264,7 +265,7 @@ const styles = StyleSheet.create({
   weekDayText: {
     fontSize: 14,
     fontFamily: 'Inter-Medium',
-    color: '#8E8E93',
+    color: colors.muted,
     textAlign: 'center',
     width: 40,
   },
@@ -283,23 +284,23 @@ const styles = StyleSheet.create({
     position: 'relative',
   },
   calendarDaySelected: {
-    backgroundColor: '#007AFF',
+    backgroundColor: colors.primary,
   },
   calendarDayToday: {
     borderWidth: 2,
-    borderColor: '#007AFF',
+    borderColor: colors.primary,
   },
   calendarDayText: {
     fontSize: 16,
     fontFamily: 'Inter-Regular',
-    color: '#1C1C1E',
+    color: colors.text,
   },
   calendarDayTextSelected: {
     color: 'white',
     fontFamily: 'Inter-SemiBold',
   },
   calendarDayTextToday: {
-    color: '#007AFF',
+    color: colors.primary,
     fontFamily: 'Inter-SemiBold',
   },
   calendarDayIndicator: {
@@ -309,7 +310,7 @@ const styles = StyleSheet.create({
     width: 16,
     height: 16,
     borderRadius: 8,
-    backgroundColor: '#FF3B30',
+    backgroundColor: colors.danger,
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -332,14 +333,14 @@ const styles = StyleSheet.create({
   selectedDateTitle: {
     fontSize: 20,
     fontFamily: 'Inter-SemiBold',
-    color: '#1C1C1E',
+    color: colors.text,
     textTransform: 'capitalize',
   },
   addButton: {
     width: 36,
     height: 36,
     borderRadius: 18,
-    backgroundColor: '#F2F2F7',
+    backgroundColor: colors.control,
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -365,14 +366,14 @@ const styles = StyleSheet.create({
   listTitle: {
     fontSize: 16,
     fontFamily: 'Inter-SemiBold',
-    color: '#1C1C1E',
+    color: colors.text,
     flex: 1,
   },
   listCategory: {
     fontSize: 12,
     fontFamily: 'Inter-Medium',
-    color: '#007AFF',
-    backgroundColor: '#E3F2FD',
+    color: colors.primary,
+    backgroundColor: colors.highlight,
     paddingHorizontal: 8,
     paddingVertical: 4,
     borderRadius: 8,
@@ -386,22 +387,22 @@ const styles = StyleSheet.create({
   itemCount: {
     fontSize: 14,
     fontFamily: 'Inter-Medium',
-    color: '#1C1C1E',
+    color: colors.text,
   },
   totalPrice: {
     fontSize: 14,
     fontFamily: 'Inter-SemiBold',
-    color: '#34C759',
+    color: colors.success,
   },
   progressBar: {
     height: 3,
-    backgroundColor: '#E5E5EA',
+    backgroundColor: colors.border,
     borderRadius: 2,
     overflow: 'hidden',
   },
   progressFill: {
     height: '100%',
-    backgroundColor: '#34C759',
+    backgroundColor: colors.success,
     borderRadius: 2,
   },
   emptyState: {
@@ -411,11 +412,11 @@ const styles = StyleSheet.create({
   emptyText: {
     fontSize: 16,
     fontFamily: 'Inter-Regular',
-    color: '#8E8E93',
+    color: colors.muted,
     marginBottom: 16,
   },
   createButton: {
-    backgroundColor: '#007AFF',
+    backgroundColor: colors.primary,
     paddingHorizontal: 20,
     paddingVertical: 10,
     borderRadius: 20,

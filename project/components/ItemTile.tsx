@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, TextInput } from 'react-native';
+import { colors } from '@/constants/Colors';
 import { Check, Camera, Trash2 } from 'lucide-react-native';
 import Animated, { 
   useSharedValue, 
@@ -113,7 +114,7 @@ export default function ItemTile({
             onPress={() => onScan(item.id)}
             activeOpacity={0.7}
           >
-            <Camera size={20} color="#007AFF" />
+            <Camera size={20} color={colors.primary} />
           </TouchableOpacity>
           
           <TouchableOpacity
@@ -121,7 +122,7 @@ export default function ItemTile({
             onPress={() => onDelete(item.id)}
             activeOpacity={0.7}
           >
-            <Trash2 size={20} color="#FF3B30" />
+            <Trash2 size={20} color={colors.danger} />
           </TouchableOpacity>
         </View>
       )}
@@ -133,7 +134,7 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: 'white',
+    backgroundColor: colors.surface,
     marginHorizontal: 16,
     marginVertical: 4,
     borderRadius: 12,
@@ -154,14 +155,14 @@ const styles = StyleSheet.create({
     height: 24,
     borderRadius: 12,
     borderWidth: 2,
-    borderColor: '#C7C7CC',
+    borderColor: colors.separator,
     justifyContent: 'center',
     alignItems: 'center',
     marginRight: 12,
   },
   checkboxChecked: {
-    backgroundColor: '#34C759',
-    borderColor: '#34C759',
+    backgroundColor: colors.success,
+    borderColor: colors.success,
   },
   itemInfo: {
     flex: 1,
@@ -169,12 +170,12 @@ const styles = StyleSheet.create({
   itemName: {
     fontSize: 16,
     fontFamily: 'Inter-SemiBold',
-    color: '#1C1C1E',
+    color: colors.text,
     marginBottom: 4,
   },
   itemNameChecked: {
     textDecorationLine: 'line-through',
-    color: '#8E8E93',
+    color: colors.muted,
   },
   itemDetails: {
     flexDirection: 'row',
@@ -183,8 +184,8 @@ const styles = StyleSheet.create({
   itemCategory: {
     fontSize: 12,
     fontFamily: 'Inter-Medium',
-    color: '#007AFF',
-    backgroundColor: '#E3F2FD',
+    color: colors.primary,
+    backgroundColor: colors.highlight,
     paddingHorizontal: 6,
     paddingVertical: 2,
     borderRadius: 4,
@@ -192,10 +193,10 @@ const styles = StyleSheet.create({
   itemPrice: {
     fontSize: 14,
     fontFamily: 'Inter-SemiBold',
-    color: '#34C759',
+    color: colors.success,
   },
   scannedPrice: {
-    color: '#FF9500',
+    color: colors.warning,
   },
   actions: {
     flexDirection: 'row',
@@ -205,7 +206,7 @@ const styles = StyleSheet.create({
     width: 36,
     height: 36,
     borderRadius: 18,
-    backgroundColor: '#F2F2F7',
+    backgroundColor: colors.control,
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -219,31 +220,31 @@ const styles = StyleSheet.create({
     width: 28,
     height: 28,
     borderRadius: 14,
-    backgroundColor: '#F2F2F7',
+    backgroundColor: colors.control,
     justifyContent: 'center',
     alignItems: 'center',
     marginHorizontal: 2,
   },
   qtyButtonText: {
     fontSize: 18,
-    color: '#007AFF',
+    color: colors.primary,
     fontWeight: 'bold',
   },
   qtyInput: {
     width: 48,
     height: 28,
     borderWidth: 1,
-    borderColor: '#C7C7CC',
+    borderColor: colors.separator,
     borderRadius: 6,
     textAlign: 'center',
     fontSize: 16,
     marginHorizontal: 2,
-    backgroundColor: 'white',
-    color: '#1C1C1E',
+    backgroundColor: colors.surface,
+    color: colors.text,
   },
   qtyUnit: {
     fontSize: 14,
-    color: '#8E8E93',
+    color: colors.muted,
     marginLeft: 4,
   },
 });

@@ -9,7 +9,10 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { CameraView, CameraType, useCameraPermissions } from 'expo-camera';
 import { X, Camera, FlipHorizontal, Zap } from 'lucide-react-native';
+import { colors } from '@/constants/Colors';
 import { router, useLocalSearchParams } from 'expo-router';
+import { StorageService } from '@/services/storage';
+import { ParserService } from '@/services/parser';
 
 export default function CameraScreen() {
   const { itemId } = useLocalSearchParams();
@@ -17,6 +20,35 @@ export default function CameraScreen() {
   const [permission, requestPermission] = useCameraPermissions();
   const [isScanning, setIsScanning] = useState(false);
   const cameraRef = useRef<CameraView>(null);
+
+  const updatePriceAndReturn = async (priceString: string) => {
+    if (!itemId) {
+      router.back();
+      return;
+    }
+
+    const price = parseFloat(priceString.replace(',', '.'));
+
+    try {
+      const lists = await StorageService.getLists();
+      const list = lists.find(l => l.items.some(i => i.id === itemId));
+
+      if (list) {
+        const idx = list.items.findIndex(i => i.id === itemId);
+        if (idx >= 0) {
+          list.items[idx].scannedPrice = price;
+          list.totalPrice = ParserService.calculateTotal(list.items);
+          await StorageService.saveList(list);
+          router.replace(`/list/${list.id}`);
+          return;
+        }
+      }
+    } catch (err) {
+      console.error('Error updating scanned price:', err);
+    }
+
+    router.back();
+  };
 
   if (!permission) {
     return <View style={styles.container} />;
@@ -26,7 +58,7 @@ export default function CameraScreen() {
     return (
       <SafeAreaView style={styles.container}>
         <View style={styles.permissionContainer}>
-          <Camera size={64} color="#8E8E93" />
+          <Camera size={64} color={colors.muted} />
           <Text style={styles.permissionTitle}>
             Acesso à Câmera Necessário
           </Text>
@@ -69,11 +101,7 @@ export default function CameraScreen() {
         },
         {
           text: 'Confirmar',
-          onPress: () => {
-            // Here you would update the item with the scanned price
-            console.log('Update item', itemId, 'with price', simulatedPrice);
-            router.back();
-          },
+          onPress: () => updatePriceAndReturn(simulatedPrice),
         },
       ]
     );
@@ -101,11 +129,7 @@ export default function CameraScreen() {
           },
           {
             text: 'Confirmar',
-            onPress: () => {
-              // Here you would update the item with the detected price
-              console.log('Update item', itemId, 'with OCR price', simulatedPrice);
-              router.back();
-            },
+            onPress: () => updatePriceAndReturn(simulatedPrice),
           },
         ]
       );
@@ -196,12 +220,12 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     padding: 32,
-    backgroundColor: '#F2F2F7',
+    backgroundColor: colors.control,
   },
   permissionTitle: {
     fontSize: 24,
     fontFamily: 'Inter-SemiBold',
-    color: '#1C1C1E',
+    color: colors.text,
     marginTop: 24,
     marginBottom: 16,
     textAlign: 'center',
@@ -209,13 +233,13 @@ const styles = StyleSheet.create({
   permissionText: {
     fontSize: 16,
     fontFamily: 'Inter-Regular',
-    color: '#8E8E93',
+    color: colors.muted,
     textAlign: 'center',
     lineHeight: 24,
     marginBottom: 32,
   },
   permissionButton: {
-    backgroundColor: '#007AFF',
+    backgroundColor: colors.primary,
     paddingHorizontal: 32,
     paddingVertical: 16,
     borderRadius: 24,
@@ -272,7 +296,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     width: 30,
     height: 30,
-    borderColor: '#007AFF',
+    borderColor: colors.primary,
     borderWidth: 3,
     borderTopWidth: 3,
     borderLeftWidth: 3,
@@ -336,17 +360,17 @@ const styles = StyleSheet.create({
     width: 80,
     height: 80,
     borderRadius: 40,
-    backgroundColor: '#007AFF',
+    backgroundColor: colors.primary,
     justifyContent: 'center',
     alignItems: 'center',
-    shadowColor: '#007AFF',
+    shadowColor: colors.primary,
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.3,
     shadowRadius: 8,
     elevation: 8,
   },
   captureButtonDisabled: {
-    backgroundColor: '#8E8E93',
+    backgroundColor: colors.muted,
     shadowOpacity: 0,
     elevation: 0,
   },

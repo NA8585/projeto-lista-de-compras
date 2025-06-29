@@ -5,6 +5,8 @@ import { VoiceRecognitionResult } from '@/types';
 export class VoiceService {
   private static isListening = false;
   private static recognition: any = null;
+  /** Timeout handler for the simulated speech recognition */
+  private static recognitionTimeout: ReturnType<typeof setTimeout> | null = null;
 
   static async requestPermissions(): Promise<boolean> {
     if (Platform.OS === 'web') {
@@ -86,11 +88,11 @@ export class VoiceService {
     reject: (error: Error) => void
   ) {
     this.isListening = true;
-    
+
     // Simulate listening for 3 seconds
-    setTimeout(() => {
+    this.recognitionTimeout = setTimeout(() => {
       this.isListening = false;
-      
+
       // Simulate some common shopping list items
       const sampleTexts = [
         'arroz, feijão, açúcar e leite',
@@ -112,6 +114,10 @@ export class VoiceService {
   static stopListening(): void {
     if (this.recognition && Platform.OS === 'web') {
       this.recognition.stop();
+    }
+    if (this.recognitionTimeout) {
+      clearTimeout(this.recognitionTimeout);
+      this.recognitionTimeout = null;
     }
     this.isListening = false;
   }
