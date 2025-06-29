@@ -129,3 +129,22 @@ export class StorageService {
     }
   }
 }
+export async function setItem<T>(key: string, value: T): Promise<void> {
+  try {
+    await AsyncStorage.setItem(key, JSON.stringify(value));
+  } catch (error) {
+    console.error('Error setting item:', error);
+    throw error;
+  }
+}
+
+export async function getItem<T>(key: string): Promise<T | null> {
+  try {
+    const data = await AsyncStorage.getItem(key);
+    if (!data) return null;
+    return JSON.parse(data) as T;
+  } catch (error) {
+    console.error('Error getting item:', error);
+    return null;
+  }
+}
