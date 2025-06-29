@@ -57,7 +57,13 @@ export default function ListDetailScreen() {
   const saveEdits = async () => {
     if (!list) return;
     try {
-      const updatedList = { ...list, items, totalPrice: ParserService.calculateTotal(items), updatedAt: new Date() };
+      const updatedList = {
+        ...list,
+        title: title.trim() || list.title,
+        items,
+        totalPrice: ParserService.calculateTotal(items),
+        updatedAt: new Date(),
+      };
       await StorageService.saveList(updatedList);
       setList(updatedList);
       Alert.alert('Lista atualizada!', 'As alterações foram salvas.');
@@ -78,7 +84,11 @@ export default function ListDetailScreen() {
 
   return (
     <ScrollView style={styles.container}>
-      <Text style={styles.title}>{title}</Text>
+      <TextInput
+        style={styles.titleInput}
+        value={title}
+        onChangeText={setTitle}
+      />
       <Text style={styles.category}>{list.category}</Text>
       <Text style={styles.date}>{list.date.toLocaleDateString('pt-BR')}</Text>
       <View style={styles.itemsSection}>
@@ -129,6 +139,17 @@ const styles = StyleSheet.create({
   errorText: {
     color: colors.danger,
     fontSize: 16,
+  },
+  titleInput: {
+    fontSize: 24,
+    fontFamily: 'Inter-Bold',
+    color: colors.text,
+    borderWidth: 1,
+    borderColor: colors.border,
+    borderRadius: 8,
+    padding: 8,
+    marginBottom: 4,
+    backgroundColor: '#F9F9F9',
   },
   title: {
     fontSize: 24,
