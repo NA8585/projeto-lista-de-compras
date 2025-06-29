@@ -10,6 +10,7 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Calendar, Save, Trash2 } from 'lucide-react-native';
+import { colors } from '@/constants/Colors';
 import { ShoppingList, ShoppingItem, ListCategory, UserSubscription } from '@/types';
 import { StorageService } from '@/services/storage';
 import { ParserService } from '@/services/parser';
@@ -168,7 +169,7 @@ export default function CreateScreen() {
           onPress={saveList}
           disabled={items.length === 0}
         >
-          <Save size={20} color={items.length === 0 ? '#C7C7CC' : 'white'} />
+          <Save size={20} color={items.length === 0 ? colors.separator : 'white'} />
           <Text style={[styles.saveButtonText, items.length === 0 && styles.saveButtonTextDisabled]}>
             Salvar
           </Text>
@@ -189,7 +190,7 @@ export default function CreateScreen() {
             value={title}
             onChangeText={setTitle}
             placeholder="Ex: Compras do Mercado"
-            placeholderTextColor="#C7C7CC"
+            placeholderTextColor={colors.separator}
           />
         </View>
 
@@ -221,7 +222,7 @@ export default function CreateScreen() {
         <View style={styles.formSection}>
           <Text style={styles.sectionTitle}>Data</Text>
           <TouchableOpacity style={styles.dateButton}>
-            <Calendar size={20} color="#007AFF" />
+            <Calendar size={20} color={colors.primary} />
             <Text style={styles.dateButtonText}>
               {selectedDate.toLocaleDateString('pt-BR')}
             </Text>
@@ -295,7 +296,7 @@ export default function CreateScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F2F2F7',
+    backgroundColor: colors.control,
   },
   header: {
     flexDirection: 'row',
@@ -303,19 +304,19 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingHorizontal: 16,
     paddingVertical: 16,
-    backgroundColor: 'white',
+    backgroundColor: colors.surface,
     borderBottomWidth: 1,
-    borderBottomColor: '#E5E5EA',
+    borderBottomColor: colors.border,
   },
   headerTitle: {
     fontSize: 28,
     fontFamily: 'Inter-Bold',
-    color: '#1C1C1E',
+    color: colors.text,
   },
   saveButton: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#007AFF',
+    backgroundColor: colors.primary,
     paddingHorizontal: 16,
     paddingVertical: 8,
     borderRadius: 20,
@@ -326,7 +327,7 @@ const styles = StyleSheet.create({
     color: 'white',
   },
   saveButtonTextDisabled: {
-    color: '#C7C7CC',
+    color: colors.separator,
   },
   content: {
     flex: 1,
@@ -337,15 +338,15 @@ const styles = StyleSheet.create({
     padding: 12,
     borderRadius: 8,
     borderLeftWidth: 4,
-    borderLeftColor: '#FF3B30',
+    borderLeftColor: colors.danger,
   },
   errorText: {
     fontSize: 14,
     fontFamily: 'Inter-Medium',
-    color: '#FF3B30',
+    color: colors.danger,
   },
   formSection: {
-    backgroundColor: 'white',
+    backgroundColor: colors.surface,
     marginHorizontal: 16,
     marginTop: 16,
     padding: 16,
@@ -354,15 +355,15 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 18,
     fontFamily: 'Inter-SemiBold',
-    color: '#1C1C1E',
+    color: colors.text,
     marginBottom: 12,
   },
   titleInput: {
     fontSize: 16,
     fontFamily: 'Inter-Regular',
-    color: '#1C1C1E',
+    color: colors.text,
     borderWidth: 1,
-    borderColor: '#E5E5EA',
+    borderColor: colors.border,
     borderRadius: 8,
     padding: 12,
     backgroundColor: '#F9F9F9',
@@ -376,17 +377,17 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
     borderRadius: 20,
     borderWidth: 1,
-    borderColor: '#E5E5EA',
+    borderColor: colors.border,
     backgroundColor: '#F9F9F9',
   },
   categoryButtonSelected: {
-    backgroundColor: '#007AFF',
-    borderColor: '#007AFF',
+    backgroundColor: colors.primary,
+    borderColor: colors.primary,
   },
   categoryButtonText: {
     fontSize: 14,
     fontFamily: 'Inter-Medium',
-    color: '#1C1C1E',
+    color: colors.text,
   },
   categoryButtonTextSelected: {
     color: 'white',
@@ -396,17 +397,17 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     padding: 12,
     borderWidth: 1,
-    borderColor: '#E5E5EA',
+    borderColor: colors.border,
     borderRadius: 8,
     backgroundColor: '#F9F9F9',
   },
   dateButtonText: {
     fontSize: 16,
     fontFamily: 'Inter-Regular',
-    color: '#1C1C1E',
+    color: colors.text,
   },
   voiceSection: {
-    backgroundColor: 'white',
+    backgroundColor: colors.surface,
     marginHorizontal: 16,
     marginTop: 16,
     padding: 16,
@@ -423,13 +424,13 @@ const styles = StyleSheet.create({
   usageCounter: {
     fontSize: 14,
     fontFamily: 'Inter-Medium',
-    color: '#8E8E93',
+    color: colors.muted,
   },
   upgradeButton: {
     marginTop: 12,
     paddingHorizontal: 16,
     paddingVertical: 8,
-    backgroundColor: '#FF9500',
+    backgroundColor: colors.warning,
     borderRadius: 16,
   },
   upgradeButtonText: {
@@ -451,17 +452,17 @@ const styles = StyleSheet.create({
   totalPrice: {
     fontSize: 18,
     fontFamily: 'Inter-Bold',
-    color: '#34C759',
+    color: colors.success,
   },
   saveButtonBottom: {
     marginTop: 24,
     marginHorizontal: 32,
-    backgroundColor: '#007AFF',
+    backgroundColor: colors.primary,
     borderRadius: 20,
     paddingVertical: 14,
     alignItems: 'center',
     justifyContent: 'center',
-    shadowColor: '#007AFF',
+    shadowColor: colors.primary,
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.2,
     shadowRadius: 4,

@@ -1,6 +1,7 @@
 import { Tabs } from 'expo-router';
 import { ShoppingCart, Calendar, Settings, Plus } from 'lucide-react-native';
 import { StyleSheet, View } from 'react-native';
+import { colors } from '@/constants/Colors';
 
 export default function TabLayout() {
   return (
@@ -8,8 +9,8 @@ export default function TabLayout() {
       screenOptions={{
         headerShown: false,
         tabBarStyle: styles.tabBar,
-        tabBarActiveTintColor: '#007AFF',
-        tabBarInactiveTintColor: '#8E8E93',
+        tabBarActiveTintColor: colors.primary,
+        tabBarInactiveTintColor: colors.muted,
         tabBarLabelStyle: styles.tabBarLabel,
       }}>
       <Tabs.Screen
@@ -26,8 +27,8 @@ export default function TabLayout() {
         options={{
           title: 'Criar',
           tabBarIcon: ({ size, color }) => (
-            <View style={[styles.createButton, { backgroundColor: color === '#007AFF' ? '#007AFF' : '#F2F2F7' }]}>
-              <Plus size={size - 4} color={color === '#007AFF' ? 'white' : color} />
+            <View style={[styles.createButton, { backgroundColor: color === colors.primary ? colors.primary : colors.control }]}> 
+              <Plus size={size - 4} color={color === colors.primary ? 'white' : color} />
             </View>
           ),
         }}
@@ -56,9 +57,9 @@ export default function TabLayout() {
 
 const styles = StyleSheet.create({
   tabBar: {
-    backgroundColor: 'white',
+    backgroundColor: colors.surface,
     borderTopWidth: 1,
-    borderTopColor: '#E5E5EA',
+    borderTopColor: colors.border,
     paddingTop: 8,
     paddingBottom: 8,
     height: 84,
