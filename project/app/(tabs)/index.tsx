@@ -1,5 +1,5 @@
 import { View, Text, FlatList, StyleSheet, Pressable } from 'react-native';
-import { Link } from 'expo-router';
+import { router } from 'expo-router';
 import { useTheme } from '@/context/ThemeContext';
 import { useShoppingLists } from '@/services/storage';
 
@@ -14,17 +14,24 @@ export default function HomeScreen() {
         data={lists}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
-          <Link href={`/list/${item.id}`} asChild>
-            <Pressable style={[styles.listItem, { backgroundColor: colors.surface }]}>
-              <View>
-                <Text style={[styles.listTitle, { color: colors.text }]}>{item.title}</Text>
-                <Text style={[styles.listDate, { color: colors.text }]}> {item.date.toLocaleDateString()} </Text>
-              </View>
-              <Pressable onPress={() => deleteList(item.id)} style={styles.deleteButton}>
-                <Text style={{ color: '#E53935' }}>Excluir</Text>
-              </Pressable>
+          <Pressable
+            style={[styles.listItem, { backgroundColor: colors.surface }]}
+            onPress={() => router.push(`/list/${item.id}`)}
+          >
+            <View>
+              <Text style={[styles.listTitle, { color: colors.text }]}>{item.title}</Text>
+              <Text style={[styles.listDate, { color: colors.text }]}> {item.date.toLocaleDateString()} </Text>
+            </View>
+            <Pressable
+              onPress={(e) => {
+                e.stopPropagation();
+                deleteList(item.id);
+              }}
+              style={styles.deleteButton}
+            >
+              <Text style={{ color: '#E53935' }}>Excluir</Text>
             </Pressable>
-          </Link>
+          </Pressable>
         )}
         contentContainerStyle={{ gap: 10 }}
       />
