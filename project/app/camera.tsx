@@ -10,6 +10,8 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { CameraView, CameraType, useCameraPermissions } from 'expo-camera';
 import { X, Camera, FlipHorizontal, Zap } from 'lucide-react-native';
 import { router, useLocalSearchParams } from 'expo-router';
+import { StorageService } from '@/services/storage';
+import { ParserService } from '@/services/parser';
 
 export default function CameraScreen() {
   const { itemId } = useLocalSearchParams();
@@ -17,6 +19,35 @@ export default function CameraScreen() {
   const [permission, requestPermission] = useCameraPermissions();
   const [isScanning, setIsScanning] = useState(false);
   const cameraRef = useRef<CameraView>(null);
+
+  const updatePriceAndReturn = async (priceString: string) => {
+    if (!itemId) {
+      router.back();
+      return;
+    }
+
+    const price = parseFloat(priceString.replace(',', '.'));
+
+    try {
+      const lists = await StorageService.getLists();
+      const list = lists.find(l => l.items.some(i => i.id === itemId));
+
+      if (list) {
+        const idx = list.items.findIndex(i => i.id === itemId);
+        if (idx >= 0) {
+          list.items[idx].scannedPrice = price;
+          list.totalPrice = ParserService.calculateTotal(list.items);
+          await StorageService.saveList(list);
+          router.replace(`/list/${list.id}`);
+          return;
+        }
+      }
+    } catch (err) {
+      console.error('Error updating scanned price:', err);
+    }
+
+    router.back();
+  };
 
   if (!permission) {
     return <View style={styles.container} />;
@@ -69,11 +100,7 @@ export default function CameraScreen() {
         },
         {
           text: 'Confirmar',
-          onPress: () => {
-            // Here you would update the item with the scanned price
-            console.log('Update item', itemId, 'with price', simulatedPrice);
-            router.back();
-          },
+          onPress: () => updatePriceAndReturn(simulatedPrice),
         },
       ]
     );
@@ -101,11 +128,7 @@ export default function CameraScreen() {
           },
           {
             text: 'Confirmar',
-            onPress: () => {
-              // Here you would update the item with the detected price
-              console.log('Update item', itemId, 'with OCR price', simulatedPrice);
-              router.back();
-            },
+            onPress: () => updatePriceAndReturn(simulatedPrice),
           },
         ]
       );
