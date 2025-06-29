@@ -2,11 +2,8 @@ import { useEffect } from 'react';
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import { ThemeProvider, useTheme } from '../context/ThemeContext';
 import { useFrameworkReady } from '@/hooks/useFrameworkReady';
-import { ThemeProvider, useTheme } from '@/context/ThemeContext';
 import { useFonts } from 'expo-font';
-import { ThemeProvider } from '@/context/ThemeContext';
 import {
   Inter_400Regular,
   Inter_500Medium,
@@ -14,6 +11,7 @@ import {
   Inter_700Bold
 } from '@expo-google-fonts/inter';
 import * as SplashScreen from 'expo-splash-screen';
+import { ThemeProvider, useTheme } from '@/context/ThemeContext';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -70,4 +68,10 @@ export default function RootLayout() {
   }
 
   return (
-    <ThemeProvider>
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <ThemeProvider>
+        <RootLayoutNav />
+      </ThemeProvider>
+    </GestureHandlerRootView>
+  );
+}
