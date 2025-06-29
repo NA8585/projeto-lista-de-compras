@@ -35,7 +35,6 @@ export default function SettingsScreen() {
   const [voiceConfirmation, setVoiceConfirmation] = useState(false);
   const spec = useThemeSpec();
   const { name: themeName, setName: setTheme, colors, colorScheme, toggleColorScheme, paletteName, setPalette } = useTheme();
-
   const styles = React.useMemo(() => createStyles(colors), [colors]);
 
   useEffect(() => {
