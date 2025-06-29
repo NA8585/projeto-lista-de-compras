@@ -5,6 +5,7 @@ import {
   StyleSheet,
   TouchableOpacity,
   Alert,
+  Image,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { CameraView, CameraType, useCameraPermissions } from 'expo-camera';
@@ -66,7 +67,11 @@ export default function CameraScreen() {
     return (
       <SafeAreaView style={styles.container}>
         <View style={styles.permissionContainer}>
-          <Camera size={64} color={colors.muted} />
+          <Image
+            source={require('../assets/images/png-transparent-camera-graphy-camera-photography-black-silhouette.png')}
+            style={{ width: 64, height: 64, tintColor: colors.muted }}
+            resizeMode="contain"
+          />
           <Text style={styles.permissionTitle}>
             Acesso à Câmera Necessário
           </Text>

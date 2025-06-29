@@ -58,7 +58,7 @@ export class VoiceService {
         reject(err);
       };
 
-      if (!Voice || !Voice.start) {
+      if (!Voice || !Voice.start || ((Voice as any).isAvailable && !(await (Voice as any).isAvailable()))) {
         Alert.alert(
           'Reconhecimento não disponível',
           'Para usar a voz no celular, instale a versão Dev do aplicativo. Será utilizada uma simulação.'
@@ -68,11 +68,23 @@ export class VoiceService {
         return;
       }
 
+      try {
+        if (Voice.destroy) {
+          await Voice.destroy();
+          Voice.removeAllListeners();
+        }
+      } catch {}
+
       Voice.onSpeechResults = e => {
         handleSuccess({ text: e.value?.[0] ?? '', confidence: 1 });
       };
       Voice.onSpeechError = err => {
         handleError(new Error(err.error ?? 'Erro de voz'));
+      };
+      Voice.onSpeechPartialResults = e => {
+        if (e.value?.[0]) {
+          handleSuccess({ text: e.value[0], confidence: 1 });
+        }
       };
       this.isListening = true;
 
