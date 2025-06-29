@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
-import { TouchableOpacity, Text, StyleSheet, View, ActivityIndicator } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { TouchableOpacity, Text, StyleSheet, View, ActivityIndicator, Platform } from 'react-native';
+import { Audio } from 'expo-audio';
 import { useThemeSpec } from '@/theme/useTheme';
 import { Mic, MicOff } from 'lucide-react-native';
 import Animated, { 
@@ -37,6 +38,21 @@ export default function VoiceButton({ onResult, onError, disabled }: VoiceButton
     transform: [{ scale: scale.value }],
     opacity: opacity.value,
   }));
+
+  useEffect(() => {
+    (async () => {
+      if (Platform.OS !== 'web') {
+        const { status } = await Audio.requestPermissionsAsync();
+        if (status !== 'granted') {
+          alert('Precisamos da sua permissão para gravar áudio 🙏');
+        }
+        await Audio.setAudioModeAsync({
+          allowsRecordingIOS: true,
+          playsInSilentModeIOS: true,
+        });
+      }
+    })();
+  }, []);
 
   const startListening = async () => {
     if (disabled || isListening) return;
