@@ -24,6 +24,7 @@ import {
 import { Feather } from '@expo/vector-icons';
 import { palettes as colorPalettes, PaletteName } from '@/constants/Colors';
 import { useTheme } from '@/context/ThemeContext';
+import { palettes } from '@/constants/Colors';
 import { UserSubscription } from '@/types';
 import { StorageService } from '@/services/storage';
 import { router } from 'expo-router';
