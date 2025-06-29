@@ -22,18 +22,30 @@ import {
   Trash2
 } from 'lucide-react-native';
 import { Feather } from '@expo/vector-icons';
-import { palettes, PaletteName } from '@/constants/Colors';
-import { useTheme } from '@/context/ThemeContext';
+import { useThemeSpec, useSetTheme } from '@/theme/useTheme';
 import { UserSubscription } from '@/types';
 import { StorageService } from '@/services/storage';
 import { router } from 'expo-router';
-import { colors } from '@/constants/Colors';
 
 export default function SettingsScreen() {
   const [subscription, setSubscription] = useState<UserSubscription | null>(null);
   const [notifications, setNotifications] = useState(true);
   const [voiceConfirmation, setVoiceConfirmation] = useState(false);
-  const { colors, colorScheme, toggleColorScheme, paletteName, setPalette } = useTheme();
+  const spec = useThemeSpec();
+  const setTheme = useSetTheme();
+  const colors = React.useMemo(() => ({
+    background: spec.background[0],
+    surface: spec.card,
+    text: spec.text,
+    muted: spec.border,
+    border: spec.border,
+    control: spec.card,
+    separator: spec.border,
+    primary: spec.primary,
+    danger: spec.accent,
+  }), [spec]);
+
+  const styles = React.useMemo(() => createStyles(colors), [colors]);
 
   useEffect(() => {
     loadSubscription();
@@ -165,30 +177,16 @@ export default function SettingsScreen() {
         {renderSubscriptionCard()}
 
         <View style={styles.section}>
-          <Text style={[styles.sectionTitle, { color: colors.text }]}>Aparência</Text>
-          <TouchableOpacity onPress={toggleColorScheme} style={[styles.settingItem, { backgroundColor: colors.surface }]}> 
-            <Text style={[styles.settingTitle, { color: colors.text }]}>Modo Escuro</Text>
-            <View style={styles.switch}>
-              <View style={[styles.switchTrack, { backgroundColor: colorScheme === 'dark' ? colors.primary : '#ccc' }]}>
-                <View style={[styles.switchThumb, { alignSelf: colorScheme === 'dark' ? 'flex-end' : 'flex-start' }]} />
-              </View>
-            </View>
-          </TouchableOpacity>
-        </View>
-
-        <View style={styles.section}>
-          <Text style={[styles.sectionTitle, { color: colors.text }]}>Paleta de Cores</Text>
+          <Text style={[styles.sectionTitle, { color: colors.text }]}>Tema</Text>
           <View style={[styles.settingItem, { backgroundColor: colors.surface, flexDirection: 'column', alignItems: 'stretch' }]}>
-            {Object.keys(palettes).map((name) => (
-              <Pressable key={name} onPress={() => setPalette(name as PaletteName)} style={styles.paletteOption}>
+            {(['sunriseGlass', 'nightfallGlass'] as const).map((name) => (
+              <Pressable key={name} onPress={() => setTheme(name)} style={styles.paletteOption}>
                 <Text style={[styles.settingTitle, { color: colors.text, textTransform: 'capitalize' }]}>{name}</Text>
-                {paletteName === name && (
-                  <Feather name="check-circle" size={22} color={colors.primary} />
-                )}
               </Pressable>
             ))}
           </View>
         </View>
+
 
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Funcionalidades</Text>
@@ -276,7 +274,7 @@ export default function SettingsScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (colors: { [key: string]: string }) => StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: colors.control,

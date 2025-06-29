@@ -2,48 +2,55 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, TextInput, Alert } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { ShoppingList, ShoppingItem } from '@/types';
-import { StorageService } from '@/services/storage';
 import { ParserService } from '@/services/parser';
+import { parsePrice } from '@/utils/price';
 import ItemTile from '@/components/ItemTile';
-import { colors } from '@/constants/Colors';
+import { useTheme } from '@/context/ThemeContext';
+import { palettes } from '@/constants/Colors';
+import { useShoppingLists } from '@/context/ShoppingListContext';
 
 export default function ListDetailScreen() {
+  const { colors } = useTheme();
+  const styles = React.useMemo(() => createStyles(colors), [colors]);
   const params = useLocalSearchParams();
   const idParam = Array.isArray(params.id) ? params.id[0] : params.id;
   const router = useRouter();
+  const { lists, upsertList } = useShoppingLists();
   const [list, setList] = useState<ShoppingList | null>(null);
   const [items, setItems] = useState<ShoppingItem[]>([]);
+  const [priceInputs, setPriceInputs] = useState<Record<string, string>>({});
   const [title, setTitle] = useState('');
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    loadList();
-  }, [idParam]);
-
-  const loadList = async () => {
-    try {
-      const allLists = await StorageService.getLists();
-      const found = allLists.find(l => l.id === idParam);
-      if (found) {
-        setList(found);
-        setItems(found.items.map(item => ({ ...item, quantity: item.quantity ?? 1 })));
-        setTitle(found.title);
-      }
-    } catch (e) {
-      setError('Erro ao carregar lista');
+    const found = lists.find(l => l.id === idParam);
+    if (found) {
+      setList(found);
+      setItems(found.items.map(item => ({ ...item, quantity: item.quantity ?? 1 })));
+      setTitle(found.title);
+      const inputs: Record<string, string> = {};
+      found.items.forEach(i => {
+        inputs[i.id] = i.price !== undefined ? i.price.toString().replace('.', ',') : '';
+      });
+      setPriceInputs(inputs);
     }
-  };
+  }, [lists, idParam]);
 
   const handleQuantityChange = (itemId: string, newQuantity: number) => {
     setItems(prev => prev.map(item => item.id === itemId ? { ...item, quantity: newQuantity } : item));
   };
 
-  const handlePriceChange = (itemId: string, newPrice: string) => {
-    const parsed = parseFloat(newPrice.replace(',', '.'));
-    setItems(prev => prev.map(item => item.id === itemId ? {
-      ...item,
-      price: isNaN(parsed) ? undefined : parsed,
-    } : item));
+  const handlePriceChange = (itemId: string, text: string) => {
+    const sanitized = text.replace(/[^0-9.,]/g, '');
+    setPriceInputs(prev => ({ ...prev, [itemId]: sanitized }));
+    const parsed = parsePrice(sanitized);
+    setItems(prev =>
+      prev.map(item =>
+        item.id === itemId
+          ? { ...item, price: parsed === null ? undefined : parsed }
+          : item
+      )
+    );
   };
 
   const handleDeleteItem = (itemId: string) => {
@@ -64,7 +71,7 @@ export default function ListDetailScreen() {
         totalPrice: ParserService.calculateTotal(items),
         updatedAt: new Date(),
       };
-      await StorageService.saveList(updatedList);
+      await upsertList(updatedList);
       setList(updatedList);
       Alert.alert('Lista atualizada!', 'As alterações foram salvas.');
     } catch (e) {
@@ -91,6 +98,12 @@ export default function ListDetailScreen() {
       />
       <Text style={styles.category}>{list.category}</Text>
       <Text style={styles.date}>{list.date.toLocaleDateString('pt-BR')}</Text>
+      <TouchableOpacity
+        style={styles.editButton}
+        onPress={() => router.push({ pathname: '/create', params: { listId: idParam } })}
+      >
+        <Text style={styles.editButtonText}>Editar</Text>
+      </TouchableOpacity>
       <View style={styles.itemsSection}>
         {items.map(item => (
           <View key={item.id} style={styles.itemRow}>
@@ -106,9 +119,9 @@ export default function ListDetailScreen() {
               <Text style={styles.priceLabel}>Preço:</Text>
               <TextInput
                 style={styles.priceInput}
-                keyboardType="numeric"
+                keyboardType="decimal-pad"
                 inputMode="decimal"
-                value={item.price !== undefined ? item.price.toString().replace('.', ',') : ''}
+                value={priceInputs[item.id] ?? ''}
                 onChangeText={value => handlePriceChange(item.id, value)}
                 placeholder="0,00"
               />
@@ -125,7 +138,7 @@ export default function ListDetailScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (colors: typeof palettes.fresh.light) => StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: colors.control,
@@ -149,7 +162,7 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     padding: 8,
     marginBottom: 4,
-    backgroundColor: '#F9F9F9',
+    backgroundColor: colors.control,
   },
   title: {
     fontSize: 24,
@@ -166,6 +179,18 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: colors.muted,
     marginBottom: 16,
+  },
+  editButton: {
+    alignSelf: 'flex-start',
+    marginBottom: 12,
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    backgroundColor: colors.primary,
+    borderRadius: 12,
+  },
+  editButtonText: {
+    color: 'white',
+    fontFamily: 'Inter-SemiBold',
   },
   itemsSection: {
     marginBottom: 24,

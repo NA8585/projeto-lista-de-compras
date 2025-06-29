@@ -11,16 +11,17 @@ import {
   Inter_700Bold
 } from '@expo-google-fonts/inter';
 import * as SplashScreen from 'expo-splash-screen';
-import { ThemeProvider, useTheme } from '@/context/ThemeContext';
+import { ThemeProvider, useThemeSpec } from '@/theme/useTheme';
+import { ShoppingListProvider } from '@/context/ShoppingListContext';
 
 SplashScreen.preventAutoHideAsync();
 
 function RootLayoutNav() {
-  const { colors, colorScheme } = useTheme();
+  const spec = useThemeSpec();
 
   return (
     <>
-      <StatusBar style={colorScheme === 'dark' ? 'light' : 'dark'} />
+      <StatusBar style={spec.text === '#F5F5F5' ? 'light' : 'dark'} />
       <Stack>
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
         <Stack.Screen
@@ -28,8 +29,8 @@ function RootLayoutNav() {
           options={{
             presentation: 'modal',
             headerTitle: 'Obter Premium',
-            headerStyle: { backgroundColor: colors.surface },
-            headerTitleStyle: { color: colors.text },
+            headerStyle: { backgroundColor: spec.card },
+            headerTitleStyle: { color: spec.text },
           }}
         />
         <Stack.Screen
@@ -37,8 +38,8 @@ function RootLayoutNav() {
           options={{
             presentation: 'modal',
             headerTitle: 'Escanear Recibo',
-            headerStyle: { backgroundColor: colors.surface },
-            headerTitleStyle: { color: colors.text },
+            headerStyle: { backgroundColor: spec.card },
+            headerTitleStyle: { color: spec.text },
           }}
         />
         <Stack.Screen name="+not-found" />
@@ -70,7 +71,9 @@ export default function RootLayout() {
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <ThemeProvider>
-        <RootLayoutNav />
+        <ShoppingListProvider>
+          <RootLayoutNav />
+        </ShoppingListProvider>
       </ThemeProvider>
     </GestureHandlerRootView>
   );

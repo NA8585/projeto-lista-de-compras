@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, TextInput } from 'react-native';
-import { colors } from '@/constants/Colors';
+import { useThemeSpec } from '@/theme/useTheme';
+import { GlassCard } from './GlassCard';
 import { Check, Camera, Trash2 } from 'lucide-react-native';
 import Animated, { 
   useSharedValue, 
@@ -20,14 +21,29 @@ interface ItemTileProps {
   showActions?: boolean;
 }
 
-export default function ItemTile({ 
-  item, 
-  onToggle, 
-  onDelete, 
-  onScan, 
+export default function ItemTile({
+  item,
+  onToggle,
+  onDelete,
+  onScan,
   onQuantityChange,
-  showActions = true 
+  showActions = true
 }: ItemTileProps) {
+  const spec = useThemeSpec();
+  const colors = React.useMemo(() => ({
+    background: spec.card,
+    text: spec.text,
+    border: spec.border,
+    primary: spec.primary,
+    danger: spec.accent,
+    control: spec.card,
+    separator: spec.border,
+    success: spec.primary,
+    warning: spec.accent,
+    highlight: spec.card,
+    muted: spec.border,
+  }), [spec]);
+  const styles = React.useMemo(() => createStyles(colors), [colors]);
   const scale = useSharedValue(1);
   const opacity = useSharedValue(item.checked ? 0.6 : 1);
 
@@ -65,7 +81,8 @@ export default function ItemTile({
   const displayPrice = item.scannedPrice || item.price;
 
   return (
-    <Animated.View style={[styles.container, animatedStyle]}>
+    <Animated.View style={animatedStyle}>
+      <GlassCard style={styles.container} checked={item.checked}>
       <TouchableOpacity
         style={styles.mainContent}
         onPress={handleToggle}
@@ -126,11 +143,12 @@ export default function ItemTile({
           </TouchableOpacity>
         </View>
       )}
+      </GlassCard>
     </Animated.View>
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (colors: { [key: string]: string }) => StyleSheet.create({
   container: {
     flexDirection: 'row',
     alignItems: 'center',

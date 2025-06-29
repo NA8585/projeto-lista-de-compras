@@ -7,6 +7,8 @@ import {
   TouchableOpacity,
   Alert,
 } from 'react-native';
+import { useTheme } from '@/context/ThemeContext';
+import { palettes } from '@/constants/Colors';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { X, Crown, Check, Zap, Camera, Users, Cloud } from 'lucide-react-native';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -64,6 +66,8 @@ const FEATURES = [
 ];
 
 export default function PaywallScreen() {
+  const { colors } = useTheme();
+  const styles = React.useMemo(() => createStyles(colors), [colors]);
   const [selectedPlan, setSelectedPlan] = useState('annual');
   const [subscription, setSubscription] = useState<UserSubscription | null>(null);
   const [loading, setLoading] = useState(false);
@@ -239,10 +243,10 @@ export default function PaywallScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (colors: typeof palettes.fresh.light) => StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F2F2F7',
+    backgroundColor: colors.control,
   },
   header: {
     paddingTop: 20,
@@ -285,13 +289,13 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 20,
     fontFamily: 'Inter-SemiBold',
-    color: '#1C1C1E',
+    color: colors.text,
     marginBottom: 16,
   },
   feature: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: 'white',
+    backgroundColor: colors.surface,
     padding: 16,
     borderRadius: 12,
     marginBottom: 8,
@@ -305,7 +309,7 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     borderRadius: 20,
-    backgroundColor: '#1C1C1E',
+    backgroundColor: colors.text,
     justifyContent: 'center',
     alignItems: 'center',
     marginRight: 16,
@@ -316,19 +320,19 @@ const styles = StyleSheet.create({
   featureTitle: {
     fontSize: 16,
     fontFamily: 'Inter-SemiBold',
-    color: '#1C1C1E',
+    color: colors.text,
     marginBottom: 4,
   },
   featureDescription: {
     fontSize: 14,
     fontFamily: 'Inter-Regular',
-    color: '#8E8E93',
+    color: colors.muted,
   },
   plansSection: {
     padding: 16,
   },
   planCard: {
-    backgroundColor: 'white',
+    backgroundColor: colors.surface,
     borderRadius: 16,
     padding: 20,
     marginBottom: 12,
@@ -342,14 +346,14 @@ const styles = StyleSheet.create({
     elevation: 3,
   },
   planCardSelected: {
-    borderColor: '#007AFF',
-    backgroundColor: '#F0F8FF',
+    borderColor: colors.primary,
+    backgroundColor: colors.highlight,
   },
   popularBadge: {
     position: 'absolute',
     top: -8,
     left: 20,
-    backgroundColor: '#FF3B30',
+    backgroundColor: colors.danger,
     paddingHorizontal: 12,
     paddingVertical: 4,
     borderRadius: 12,
@@ -363,7 +367,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: -8,
     right: 20,
-    backgroundColor: '#FF9500',
+    backgroundColor: colors.warning,
     paddingHorizontal: 12,
     paddingVertical: 4,
     borderRadius: 12,
@@ -382,13 +386,13 @@ const styles = StyleSheet.create({
   planTitle: {
     fontSize: 18,
     fontFamily: 'Inter-SemiBold',
-    color: '#1C1C1E',
+    color: colors.text,
   },
   planSavings: {
     fontSize: 12,
     fontFamily: 'Inter-SemiBold',
-    color: '#34C759',
-    backgroundColor: '#E8F5E8',
+    color: colors.success,
+    backgroundColor: colors.highlight,
     paddingHorizontal: 8,
     paddingVertical: 4,
     borderRadius: 8,
@@ -401,12 +405,12 @@ const styles = StyleSheet.create({
   planPrice: {
     fontSize: 24,
     fontFamily: 'Inter-Bold',
-    color: '#1C1C1E',
+    color: colors.text,
   },
   planPeriod: {
     fontSize: 14,
     fontFamily: 'Inter-Regular',
-    color: '#8E8E93',
+    color: colors.muted,
     marginLeft: 4,
   },
   planSelector: {
@@ -417,16 +421,16 @@ const styles = StyleSheet.create({
     height: 24,
     borderRadius: 12,
     borderWidth: 2,
-    borderColor: '#C7C7CC',
+    borderColor: colors.separator,
     justifyContent: 'center',
     alignItems: 'center',
   },
   planSelectorSelected: {
-    backgroundColor: '#007AFF',
-    borderColor: '#007AFF',
+    backgroundColor: colors.primary,
+    borderColor: colors.primary,
   },
   currentUsage: {
-    backgroundColor: 'white',
+    backgroundColor: colors.surface,
     margin: 16,
     padding: 20,
     borderRadius: 16,
@@ -439,7 +443,7 @@ const styles = StyleSheet.create({
   usageTitle: {
     fontSize: 16,
     fontFamily: 'Inter-SemiBold',
-    color: '#1C1C1E',
+    color: colors.text,
     marginBottom: 16,
   },
   usageStats: {
@@ -452,29 +456,29 @@ const styles = StyleSheet.create({
   usageValue: {
     fontSize: 20,
     fontFamily: 'Inter-Bold',
-    color: '#FF3B30',
+    color: colors.danger,
   },
   usageLabel: {
     fontSize: 12,
     fontFamily: 'Inter-Regular',
-    color: '#8E8E93',
+    color: colors.muted,
     marginTop: 4,
   },
   footer: {
     padding: 16,
-    backgroundColor: 'white',
+    backgroundColor: colors.surface,
     borderTopWidth: 1,
-    borderTopColor: '#E5E5EA',
+    borderTopColor: colors.border,
   },
   purchaseButton: {
-    backgroundColor: '#007AFF',
+    backgroundColor: colors.primary,
     paddingVertical: 16,
     borderRadius: 24,
     alignItems: 'center',
     marginBottom: 12,
   },
   purchaseButtonDisabled: {
-    backgroundColor: '#C7C7CC',
+    backgroundColor: colors.separator,
   },
   purchaseButtonText: {
     fontSize: 18,
@@ -484,7 +488,7 @@ const styles = StyleSheet.create({
   footerText: {
     fontSize: 12,
     fontFamily: 'Inter-Regular',
-    color: '#8E8E93',
+    color: colors.muted,
     textAlign: 'center',
   },
 });
