@@ -12,6 +12,7 @@ import {
 } from '@expo-google-fonts/inter';
 import * as SplashScreen from 'expo-splash-screen';
 import { ThemeProvider, useThemeSpec } from '@/theme/useTheme';
+import FundoComGradiente from '@/components/FundoComGradiente';
 import { ThemeProvider as PaletteProvider } from '@/context/ThemeContext';
 import { ShoppingListProvider } from '@/context/ShoppingListContext';
 SplashScreen.preventAutoHideAsync();
@@ -22,6 +23,7 @@ function RootLayoutNav() {
   return (
     <>
       <StatusBar style={spec.text === '#F5F5F5' ? 'light' : 'dark'} />
+      <FundoComGradiente>
       <Stack>
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
         <Stack.Screen
@@ -44,6 +46,7 @@ function RootLayoutNav() {
         />
         <Stack.Screen name="+not-found" />
       </Stack>
+      </FundoComGradiente>
     </>
   );
 }
