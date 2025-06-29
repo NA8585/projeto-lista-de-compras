@@ -2,6 +2,8 @@ import React, { createContext, useState, useContext, useMemo, ReactNode } from '
 import { useColorScheme } from 'react-native';
 import { palettes, PaletteName } from '../constants/Colors';
 import { setItem, getItem } from '../services/storage';
+import { useSetTheme } from '@/theme/useTheme';
+import { ThemeName } from '@/theme/themes';
 
 interface ThemeContextType {
   colors: typeof palettes.fresh.light;
@@ -19,6 +21,7 @@ interface ThemeProviderProps {
 
 export const ThemeProvider = ({ children }: ThemeProviderProps) => {
   const systemScheme = useColorScheme();
+  const setThemeName = useSetTheme();
   const [colorScheme, setColorScheme] = useState<'light' | 'dark'>(systemScheme || 'light');
   const [paletteName, setPaletteName] = useState<PaletteName>('fresh');
 
@@ -28,6 +31,9 @@ export const ThemeProvider = ({ children }: ThemeProviderProps) => {
       const savedScheme = await getItem<'light' | 'dark'>('theme_scheme');
       if (savedPalette) {
         setPaletteName(savedPalette);
+        if (savedPalette === 'sunriseGlass' || savedPalette === 'nightfallGlass') {
+          setThemeName(savedPalette as ThemeName);
+        }
       }
       if (savedScheme) {
         setColorScheme(savedScheme);
@@ -41,6 +47,9 @@ export const ThemeProvider = ({ children }: ThemeProviderProps) => {
   const setPalette = async (name: PaletteName) => {
     setPaletteName(name);
     await setItem('theme_palette', name);
+    if (name === 'sunriseGlass' || name === 'nightfallGlass') {
+      setThemeName(name as ThemeName);
+    }
   };
 
   const toggleColorScheme = async () => {
