@@ -11,22 +11,16 @@ import {
   Inter_700Bold
 } from '@expo-google-fonts/inter';
 import * as SplashScreen from 'expo-splash-screen';
-import { ThemeProvider, useTheme } from '@/context/ThemeContext';
+import { ThemeProvider, useThemeSpec } from '@/theme/useTheme';
 import { ShoppingListProvider } from '@/context/ShoppingListContext';
-import { applyPalette } from '@/constants/Colors';
-
 SplashScreen.preventAutoHideAsync();
 
 function RootLayoutNav() {
-  const { colors, colorScheme, paletteName } = useTheme();
-
-  useEffect(() => {
-    applyPalette(paletteName, colorScheme === 'dark');
-  }, [paletteName, colorScheme]);
+  const spec = useThemeSpec();
 
   return (
     <>
-      <StatusBar style={colorScheme === 'dark' ? 'light' : 'dark'} />
+      <StatusBar style={spec.text === '#F5F5F5' ? 'light' : 'dark'} />
       <Stack>
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
         <Stack.Screen
@@ -34,8 +28,8 @@ function RootLayoutNav() {
           options={{
             presentation: 'modal',
             headerTitle: 'Obter Premium',
-            headerStyle: { backgroundColor: colors.surface },
-            headerTitleStyle: { color: colors.text },
+            headerStyle: { backgroundColor: spec.card },
+            headerTitleStyle: { color: spec.text },
           }}
         />
         <Stack.Screen
@@ -43,8 +37,8 @@ function RootLayoutNav() {
           options={{
             presentation: 'modal',
             headerTitle: 'Escanear Recibo',
-            headerStyle: { backgroundColor: colors.surface },
-            headerTitleStyle: { color: colors.text },
+            headerStyle: { backgroundColor: spec.card },
+            headerTitleStyle: { color: spec.text },
           }}
         />
         <Stack.Screen name="+not-found" />

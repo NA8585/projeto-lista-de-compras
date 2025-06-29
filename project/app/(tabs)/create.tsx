@@ -9,9 +9,9 @@ import {
   Alert,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import FundoComGradiente from '@/components/FundoComGradiente';
 import { Calendar, Save, Trash2 } from 'lucide-react-native';
-import { useTheme } from '@/context/ThemeContext';
-import { palettes } from '@/constants/Colors';
+import { useThemeSpec } from '@/theme/useTheme';
 import { ShoppingList, ShoppingItem, ListCategory, UserSubscription } from '@/types';
 import { StorageService } from '@/services/storage';
 import { ParserService } from '@/services/parser';
@@ -24,7 +24,17 @@ import { useShoppingLists } from '@/context/ShoppingListContext';
 const CATEGORIES: ListCategory[] = ['Mercado', 'Farmácia', 'Papelaria', 'Pet Shop'];
 
 export default function CreateScreen() {
-  const { colors } = useTheme();
+  const spec = useThemeSpec();
+  const colors = React.useMemo(() => ({
+    background: spec.background[0],
+    surface: spec.card,
+    text: spec.text,
+    primary: spec.primary,
+    border: spec.border,
+    control: spec.card,
+    separator: spec.border,
+    danger: spec.accent,
+  }), [spec]);
   const styles = React.useMemo(() => createStyles(colors), [colors]);
   const { listId } = useLocalSearchParams<{ listId?: string }>();
   const { lists, upsertList } = useShoppingLists();
@@ -169,6 +179,7 @@ export default function CreateScreen() {
   const voiceUsageLeft = subscription ? (subscription.isPremium ? '∞' : `${30 - subscription.voiceUsageCount}`) : '0';
 
   return (
+    <FundoComGradiente>
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
         <Text style={styles.headerTitle}>{editing ? 'Editar Lista' : 'Nova Lista'}</Text>
@@ -298,10 +309,11 @@ export default function CreateScreen() {
         )}
       </ScrollView>
     </SafeAreaView>
+    </FundoComGradiente>
   );
 }
 
-const createStyles = (colors: typeof palettes.fresh.light) => StyleSheet.create({
+const createStyles = (colors: { [key: string]: string }) => StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: colors.control,

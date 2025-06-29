@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { TouchableOpacity, Text, StyleSheet, View, ActivityIndicator } from 'react-native';
-import { useTheme } from '@/context/ThemeContext';
-import { palettes } from '@/constants/Colors';
+import { useThemeSpec } from '@/theme/useTheme';
 import { Mic, MicOff } from 'lucide-react-native';
 import Animated, { 
   useSharedValue, 
@@ -21,7 +20,14 @@ interface VoiceButtonProps {
 }
 
 export default function VoiceButton({ onResult, onError, disabled }: VoiceButtonProps) {
-  const { colors } = useTheme();
+  const spec = useThemeSpec();
+  const colors = React.useMemo(() => ({
+    background: spec.accent,
+    text: spec.text,
+    primary: spec.primary,
+    border: spec.border,
+    surface: spec.card,
+  }), [spec]);
   const styles = React.useMemo(() => createStyles(colors), [colors]);
   const [isListening, setIsListening] = useState(false);
   const scale = useSharedValue(1);
@@ -114,7 +120,7 @@ export default function VoiceButton({ onResult, onError, disabled }: VoiceButton
   );
 }
 
-const createStyles = (colors: typeof palettes.fresh.light) => StyleSheet.create({
+const createStyles = (colors: { [key: string]: string }) => StyleSheet.create({
   container: {
     alignItems: 'center',
     marginVertical: 20,
