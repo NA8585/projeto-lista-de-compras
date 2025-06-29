@@ -1,6 +1,6 @@
 import * as Speech from 'expo-speech';
 import { Platform, Alert } from 'react-native';
-import { Audio } from 'expo-av';
+import { Audio } from 'expo-audio';
 import Voice from '@react-native-voice/voice';
 import { VoiceRecognitionResult } from '@/types';
 
@@ -24,7 +24,10 @@ export class VoiceService {
       }
     }
 
-    const { status } = await Audio.requestPermissionsAsync();
+    let { status } = await Audio.getPermissionsAsync();
+    if (status !== 'granted') {
+      ({ status } = await Audio.requestPermissionsAsync());
+    }
     return status === 'granted';
   }
 
@@ -39,8 +42,8 @@ export class VoiceService {
       });
     }
 
-    const { status } = await Audio.requestPermissionsAsync();
-    if (status !== 'granted') {
+    const hasPermission = await this.requestPermissions();
+    if (!hasPermission) {
       throw new Error('Permissão negada');
     }
 
